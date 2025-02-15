@@ -18,3 +18,9 @@ Next Sprint Plan:
 		Item logging
 
 Team: Lucas Estevez, Isaac Rodriguez
+
+Responsibilities (for this sprint):
+	Lucas: User login handling
+	Isaac: Database setup
+
+As we're not sure what the final project will look like yet, we will figure out future responsibilities as we go.
