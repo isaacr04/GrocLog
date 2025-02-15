@@ -1,35 +1,45 @@
+Project Proposal - GrocLog (Grocery Price Tracker)
+
 Grocery Price Tracker (GrocLog)
 
 GrocLog is an application which lets users track the prices that they pay for their groceries, so they can see what's really happening rather than relying on what others are saying.
 The idea is for a user to be able to enter the items they are purchasing along with their prices, and can search their data and see what they've been paying for similar items over time.
 
 Intended Features:
-	- Enter prices of items, and store in database
-	- See graph of prices for an item over time
-	- Have grocery list, which will show price paid last time
-	- See estimated grocery bill based on previous prices (not accounting for inc/dec)
+    - Enter prices of items, and store in database
+    - See graph of prices for an item over time
+    - Have grocery list, which will show price paid last time
+    - See estimated grocery bill based on previous prices (not accounting for inc/dec)
 
-The target audience for GrocLog is anyone who buys groceries, and is curious about what's happening to prices over time. It is also meant for anyone who's grocery bill is increasing and wants to know why.
+ 
+
+Target Audience: Anyone who buys groceries, and is curious about what's happening to prices over time. It is also meant for anyone who's grocery bill is increasing and wants to know why.
+
+ 
 
 Next Sprint Plan:
-	Tasks:
-		Setup database
-		User login handling
-		Item logging
+
+    Setup database
+    User login handling
+    Item logging
+
+ 
 
 Team: Lucas Estevez, Isaac Rodriguez
 
-Responsibilities (for this sprint):
-	Lucas: 
-		User login handling
-		Price Logging Interface
-		Purchase statistics
+Responsibilities (subject to change):
+    Lucas: 
+        User login handling
+        Price Logging Interface
+        Purchase statistics
 
-	Isaac: 
-		Database setup and management
-		Charting price info
-		UI/UX Design
+    Isaac: 
+        Database setup and management
+        Charting price info
+        UI/UX Design
 
 As we're not sure what the final project will look like yet, we will figure out future responsibilities as we go.
 
 
+Communication:
+We're going to be communicating through Discord, and hosting our code/project data on Github
