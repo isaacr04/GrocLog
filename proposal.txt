@@ -1,0 +1,27 @@
+Grocery Price Tracker (GrocLog)
+
+GrocLog is an application which lets users track the prices that they pay for their groceries, so they can see what's really happening rather than relying on what others are saying.
+The idea is for a user to be able to enter the items they are purchasing along with their prices, and can search their data and see what they've been paying for similar items over time.
+
+The target audience for GrocLog is anyone who buys groceries, and is curious about what's happening to prices over time. It is also meant for anyone who's grocery bill is increasing and wants to know why.
+
+Next Sprint Plan:
+
+
+Team: Lucas Estevez, Isaac Rodriguez
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
