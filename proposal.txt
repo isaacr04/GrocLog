@@ -20,7 +20,16 @@ Next Sprint Plan:
 Team: Lucas Estevez, Isaac Rodriguez
 
 Responsibilities (for this sprint):
-	Lucas: User login handling
-	Isaac: Database setup
+	Lucas: 
+		User login handling
+		Price Logging Interface
+		Purchase statistics
+
+	Isaac: 
+		Database setup and management
+		Charting price info
+		UI/UX Design
 
 As we're not sure what the final project will look like yet, we will figure out future responsibilities as we go.
+
+
