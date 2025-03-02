@@ -1,26 +1,40 @@
-<!-- Homepage for Isaac's server -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="sitestyle.css">
-    <title>Isaac's Landing Page</title>
-  </head>
-  <body>
-    <section class="greeting">
-      <h1>Welcome to Isaac's Server!</h1>
-      <p>There's not much here right now...</p>
-    </section>
-    <section class="branch-list">
-      <h2>Go on a journey!</h2>
-      <ul>
-	<li><a href="otherpage.html">Go to another page!</a></li>
-	<li><a href="dontclick.html">Don't click this one...</a></li>
-      </ul>
-    </section>
-    <div class="marquee">
-      <img src="godzilla-griddy.gif" alt="GIF of Godzilla wearing Air Jordans and hitting popular Fortnite emote 'Get Griddy'."/>
-      <p>Godzilla with the J's hitting the griddy.</p>
-    </div>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GrocLog</title>
+</head>
+<body>
+  <h1>GrocLog</h1>
+
+  <!-- Add Item Form -->
+  <form id="Add" action="/api" method="POST">
+    <label for="nameAdd">Item:</label>
+    <input name="name" id="nameAdd" required>
+    <label for="priceAdd">Price:</label>
+    <input name="price" id="priceAdd" required>
+    <label for="dateAdd">Date:</label>
+    <input name="date" id="dateAdd" type="date" required>
+    <input type="submit" value="Add Item">
+  </form>
+
+  <!-- Search Item Form -->
+  <form id="Search" action="/api/search" method="POST">
+    <label for="nameSearch">Item:</label>
+    <input name="name" id="nameSearch">
+    <label for="priceSearch">Price:</label>
+    <input name="price" id="priceSearch">
+    <label for="dateSearch">Date:</label>
+    <input name="date" id="dateSearch" type="date">
+    <input type="submit" value="Search Item">
+  </form>
+
+  <!-- Display Items -->
+  <h2>Purchase History</h2>
+  <ul id="item-list"></ul>
+
+  <!-- External JavaScript -->
+  <script src="script.js"></script>
+</body>
 </html>
