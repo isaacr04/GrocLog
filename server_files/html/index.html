@@ -1,26 +1,23 @@
-<!-- Homepage for Isaac's server -->
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="sitestyle.css">
-    <title>Isaac's Landing Page</title>
+    <link rel="stylesheet" href="homepage.css">
+    <title>GrocLog</title>
   </head>
   <body>
     <section class="greeting">
-      <h1>Welcome to Isaac's Server!</h1>
+      <h1>Welcome to GrocLog!</h1>
       <p>There's not much here right now...</p>
     </section>
-    <section class="branch-list">
-      <h2>Go on a journey!</h2>
-      <ul>
-	<li><a href="otherpage.html">Go to another page!</a></li>
-	<li><a href="dontclick.html">Don't click this one...</a></li>
-      </ul>
+    <section class="">
+    	<form action="/itemlog" method="POST" id="form">
+      		<label for="username">Username:</label>
+      		<input name="username" id="username">
+      		<label for="pw">Password:</label>
+      		<input name="pw" id="pw">
+      		<input type="submit" value="Login">
+    	</form>
     </section>
-    <div class="marquee">
-      <img src="godzilla-griddy.gif" alt="GIF of Godzilla wearing Air Jordans and hitting popular Fortnite emote 'Get Griddy'."/>
-      <p>Godzilla with the J's hitting the griddy.</p>
-    </div>
   </body>
 </html>
