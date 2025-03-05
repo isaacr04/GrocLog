@@ -1,1 +1,4 @@
 /.idea/
+/server_files/node_modules/
+/server_files/package.json
+/server_files/package-lock.json
