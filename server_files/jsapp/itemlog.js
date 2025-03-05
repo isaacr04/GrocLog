@@ -8,6 +8,7 @@ function formatDate(dateString) {
     return new Date(dateString).toISOString().split('T')[0]; //Extracts simple YYYY-MM-DD string
 }
 
+// Takes info from req and returns a message in res
 function addItem(req, res) {
     const { user_id, item, price, purchase_date } = req.body;
     if (!user_id || !item || !price || !purchase_date) {
@@ -24,6 +25,7 @@ function addItem(req, res) {
     });
 }
 
+// Takes info from req and returns a json of SLQ query results
 function searchItems(req, res) {
     const { user_id, item, price, purchase_date } = req.body;
     let query = 'SELECT * FROM itemlog WHERE user_id = ?';
@@ -51,6 +53,7 @@ function searchItems(req, res) {
     });
 }
 
+//Takes info from req and returns a message in res
 function deleteItem(req, res) {
     const { user_id, item, price, purchase_date } = req.body;
     if (!user_id || !item || !price || !purchase_date) {
@@ -70,6 +73,7 @@ function deleteItem(req, res) {
     });
 }
 
+//Takes info from req for search and update values, and returns message in res
 function editItem(req, res) {
     const { user_id, item, price, purchase_date, newItem, newPrice, newDate } = req.body;
 
