@@ -12,10 +12,10 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Routes for itemlog
-app.post('/itemlog/add', itemlog.addItem);
-app.post('/itemlog/search', itemlog.searchItems);
-app.post('/itemlog/delete', itemlog.deleteItem);
-app.post('/itemlog/edit', itemlog.editItem);
+app.post('/api/additem', itemlog.addItem);
+app.post('/api/searchitem', itemlog.searchItems);
+app.post('/api/deleteitem', itemlog.deleteItem);
+app.post('/api/edititem', itemlog.editItem);
 
 
 app.listen(port, () => {
