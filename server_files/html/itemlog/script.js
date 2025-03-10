@@ -1,7 +1,20 @@
 const userId = 1; //Example user id, replace with dynamic solution from user accounts
+const itemList = document.getElementById('item-list');
+const totalSpend = document.getElementById('total-spend');
+const USDollar = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+});
 
+// Returns date string in format (Short Month), dd, yyyy
 function formatDate(dateString) {
-    return new Date(dateString).toISOString().split('T')[0]; //Extracts simple YYYY-MM-DD string
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        timeZone: 'UTC',
+        month: 'short',
+        day: '2-digit',
+        year: 'numeric'
+    });
 }
 
 // Function to load items from database
@@ -12,12 +25,13 @@ async function loadItems() {
         body: JSON.stringify({ user_id: userId })
     });
     const results = await response.json();
-    const itemList = document.getElementById("item-list");
     itemList.innerHTML = "";
+    let totalSpendValue = 0;
     results.forEach(entry => {
+        totalSpendValue += parseFloat(entry.price);
         const li = document.createElement("li");
         const formattedDate = formatDate(entry.purchase_date);
-        li.textContent = `${entry.item} - $${entry.price} on ${formattedDate}`;
+        li.textContent = `${entry.item} - ${USDollar.format(entry.price)} on ${formattedDate}`;
 
         // Edit Button
         const editButton = document.createElement("button");
@@ -33,6 +47,8 @@ async function loadItems() {
         li.appendChild(deleteButton);
         itemList.appendChild(li);
     });
+
+    totalSpend.textContent = `${USDollar.format(totalSpendValue)}`;
 }
 
 // Function to handle adding an item
@@ -106,12 +122,11 @@ async function searchItems(event) {
     });
 
     const results = await response.json();
-    const itemList = document.getElementById("item-list");
     itemList.innerHTML = "";
 
     results.forEach(entry => {
         const li = document.createElement("li");
-        li.textContent = `${entry.item} - $${entry.price} on ${formatDate(entry.purchase_date)}`;
+        li.textContent = `${entry.item} - ${USDollar.format(entry.price)} on ${formatDate(entry.purchase_date)}`;
 
         // Edit Button
         const editButton = document.createElement("button");
@@ -132,7 +147,6 @@ async function searchItems(event) {
 // Load items initially
 loadItems();
 
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById("Add").addEventListener("submit", addItem);
-    document.getElementById("Search").addEventListener("submit", searchItems);
-})
+document.getElementById("Add").addEventListener("submit", addItem);
+document.getElementById("Search").addEventListener("submit", searchItems);
+document.getElementById("Search").addEventListener("reset", loadItems);
