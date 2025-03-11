@@ -82,10 +82,10 @@ function editItem(req, res) {
     }
 
     const query = `
-    UPDATE itemlog 
-    SET item = ?, price = ?, purchase_date = ? 
-    WHERE user_id = ? AND item = ? AND price = ? AND purchase_date = ?
-  `;
+        UPDATE itemlog
+        SET item = ?, price = ?, purchase_date = ?
+        WHERE user_id = ? AND item = ? AND price = ? AND purchase_date = ?
+    `;
 
     db.query(
         query,
