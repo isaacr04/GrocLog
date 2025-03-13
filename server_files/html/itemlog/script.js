@@ -75,25 +75,23 @@ async function addItem(event) {
     const price = document.getElementById("priceAdd").value;
     const purchaseDate = document.getElementById("dateAdd").value;
 
-    const response = await fetch("/api/additem", {
+    await fetch("/api/additem", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ user_id: userId, item, price, purchase_date: purchaseDate })
     });
 
-    const result = await response.json();
     // Reload items after adding
     loadItems();
 }
 
 // Function to handle deleting an item
 async function deleteItem(entry) {
-    const response = await fetch("/api/deleteitem", {
+    await fetch("/api/deleteitem", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(entry)
     });
-    const result = await response.json();
     loadItems();
 }
 
@@ -104,7 +102,7 @@ async function editItem(entry) {
     const newDate = Date.parse(prompt("Edit purchase date:", formatDate(entry.purchase_date, true)));
 
     if (newItem && newPrice && newDate) {
-        const response = await fetch("/api/edititem", {
+        await fetch("/api/edititem", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -118,7 +116,6 @@ async function editItem(entry) {
             }),
         });
 
-        const result = await response.json();
         loadItems(); // Refresh the list after editing
     }
 }
