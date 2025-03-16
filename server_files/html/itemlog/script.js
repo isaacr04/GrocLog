@@ -90,7 +90,12 @@ async function deleteItem(entry) {
     await fetch("/api/deleteitem", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(entry)
+        body: JSON.stringify({
+            user_id: userId,
+            item: entry.item,
+            price: entry.price,
+            purchase_date: formatDate(entry.purchase_date), // Original date format
+        })
     });
     loadItems();
 }
@@ -106,7 +111,7 @@ async function editItem(entry) {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                user_id: entry.user_id,
+                user_id: user_id,
                 item: entry.item, // Original item name
                 price: entry.price, // Original price
                 purchase_date: formatDate(entry.purchase_date), // Original date
