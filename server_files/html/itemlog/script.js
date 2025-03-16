@@ -111,7 +111,7 @@ async function editItem(entry) {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                user_id: user_id,
+                user_id: userId,
                 item: entry.item, // Original item name
                 price: entry.price, // Original price
                 purchase_date: formatDate(entry.purchase_date), // Original date
