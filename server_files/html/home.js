@@ -1,4 +1,3 @@
-console.log("home.js read")
 document.addEventListener("DOMContentLoaded", function() {
     console.log("DOMContentLoaded!")
     const form = document.getElementById("login-form")
@@ -7,7 +6,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     form.addEventListener("submit", function (event) {
         event.preventDefault()
-        console.log("form submit preventDefault, in event listener")
         login(user_field.value, pw_field.value)
     })
 })
@@ -16,7 +14,6 @@ const login = (user, pw) => {
 
     let data = JSON.stringify({user: user, pw: pw})
 
-    console.log("doing the fetch")
     fetch("/api/login", {
         method: "POST",
         headers: {

@@ -4,14 +4,23 @@ const users = require('./users');
 
 console.log("Accessing login.js...");
 
-function loginAttempt(req, res) {
-    const { username, password } = req.body;
-    if (!username || !password) {
-        return res.status(261).json({ error: 'All fields are required' });
+function loginAttempt(req, res){
+    console.log(req.body)
+    const { user, pw } = req.body;
+    console.log("username: ",user)
+    console.log("password: ",pw)
+    if (!user || !pw) {
+        return res.status(400).json({ error: 'All fields are required' });
     }
+
+    let validLogin = validate(user,pw)
     else{
-        return JSON.stringify({message: "hi!",user:username,pw:password})
+        res.redirect('/itemlog');
     }
 
     //const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
+}
+
+module.exports = {
+    loginAttempt
 }
