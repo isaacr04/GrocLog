@@ -36,17 +36,12 @@ async function loginAttempt(req, res){
 
 //Returns permission level of user if the login is valid, -1 otherwise
 async function validateLogin(user, pw) {
-    console.log("Beginning of validateLogin function");
     const query = 'SELECT * FROM users WHERE username = ? AND password = ? LIMIT 1';
     try {
         const [rows] = await db.promise().query(query, [user, pw]);
-        console.log("[rows]: ",rows)
         if (rows.length === 0) {
-            console.log("Error: No user found or incorrect password");
             return -1;
         } else {
-            console.log("No error, user exists with correct password");
-            console.log("Result (perm):", rows[0].perm);
             return rows[0].perm;
         }
     }

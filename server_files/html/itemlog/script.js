@@ -45,7 +45,6 @@ function addButtons(li, entry) {
 
 async function getUserId(){
     let data = JSON.stringify({user: sessionStorage.getItem('user'), pw: sessionStorage.getItem('pw')})
-    console.log("data to fetch: ",data)
     return fetch("/api/getID", {
         method: "POST",
         headers: {
@@ -55,18 +54,15 @@ async function getUserId(){
     })
     .then(response => response.json())
     .then(data => {
-        console.log("return data: ",data)
         let id = data.id;
         switch (id) {
             case -1:
                 return -1;
             default:
-                console.log("code to get returned to initial f(x): ",id)
                 return id;
         }
     })
     .catch(error => {
-        console.error("Error:", error);
         return -1;
     });
 }
@@ -180,12 +176,11 @@ async function searchItems(event) {
 
 document.addEventListener("DOMContentLoaded", async function () {
     userId = await getUserId();
-    console.log("id returned:", userId);
 
     if (userId !== -1) {
         loadItems(userId);
     } else {
-        console.error("Invalid user ID, skipping item loading.");
+        window.location.href='/';
     }
 });
 
