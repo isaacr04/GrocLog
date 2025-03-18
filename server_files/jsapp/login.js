@@ -35,16 +35,10 @@ async function loginAttempt(req, res){
 
 async function validateLogin(user, pw) {
     console.log("Beginning of validateLogin function");
-
-
     const query = 'SELECT * FROM users WHERE username = ? AND password = ? LIMIT 1';
-
     try {
-
         const [rows] = await db.promise().query(query, [user, pw]);
-
         console.log("[rows]: ",rows)
-
         if (rows.length === 0) {
             console.log("Error: No user found or incorrect password");
             return -1;
@@ -55,9 +49,7 @@ async function validateLogin(user, pw) {
         }
     }
     catch (error) {
-
         console.error("Database error:", error);
-
     }
 }
 

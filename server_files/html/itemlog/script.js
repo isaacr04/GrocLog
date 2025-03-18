@@ -1,4 +1,8 @@
-const userId = 1; //Example user id, replace with dynamic solution from user accounts
+getUserId().then(id => {
+    console.log("id returned: ",id)
+    userId = id;
+    console.log("User ID:", userId);
+});
 const itemList = document.getElementById('item-list');
 const totalSpend = document.getElementById('total-spend');
 const USDollar = new Intl.NumberFormat('en-US', {
@@ -42,6 +46,32 @@ function addButtons(li, entry) {
     buttonDiv.appendChild(editButton);
     buttonDiv.appendChild(deleteButton);
     li.appendChild(buttonDiv);
+}
+
+async function getUserId(){
+    let data = JSON.stringify({user: sessionStorage.getItem('user'), pw: sessionStorage.getItem('pw')})
+    console.log("data to fetch: ",data)
+    fetch("/api/getID", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: data
+    })
+    .then(console.log("hello"))
+    .then(response => response.json())
+    .then(data => {
+        console.log("return data: ",data)
+        let code = data.code;
+        switch (code) {
+            case -1:
+                window.location.href='/';
+                break;
+            default:
+                return code;
+        }
+    })
+    .catch(error => console.error("Error:", error));
 }
 
 // Function to load items from database
@@ -151,8 +181,12 @@ async function searchItems(event) {
     });
 }
 
-// Load items initially
-loadItems();
+document.addEventListener("DOMContentLoaded", function() {
+    // Load items initially
+    loadItems();
+
+
+})
 
 document.getElementById("Add").addEventListener("submit", addItem);
 document.getElementById("Search").addEventListener("submit", searchItems);

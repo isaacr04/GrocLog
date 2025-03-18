@@ -34,7 +34,39 @@ function addUser(req, res) {
     });
 }
 
+async function getID(req, res){
+    const { user, pw } = req.body;
+    if (!user || !pw) {
+        return res.status(400).json({code: -1});
+    }
+
+    const query = 'SELECT * FROM users WHERE username = ? AND password = ? LIMIT 1';
+    try {
+        const [rows] = await db.promise().query(query, [user, pw]);
+        if (rows.length === 0) {
+            console.log("Error: No user found or incorrect password");
+            return res.status(400).json({ id: -1 });
+        } else {
+            console.log("No error, user exists with correct password");
+            console.log("Result (perm):", rows[0].perm);
+            console.log("User id to return: ",rows[0].user_id)
+            if( rows[0].perm == 1) {
+                return res.status(400).json({ id: -1 });
+            }
+            else{
+                return res.status(200).json({id: rows[0].user_id})
+            }
+        }
+    }
+    catch (error) {
+        console.error("Database error:", error);
+        return -1;
+    }
+
+}
+
 module.exports = {
     getUsers,
-    addUser
+    addUser,
+    getID
 }

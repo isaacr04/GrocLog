@@ -25,6 +25,7 @@ app.post('/api/edititem', itemlog.editItem);
 //Routes for users
 app.post('/api/adduser', users.addUser);
 app.post('/api/getusers', users.getUsers);
+app.post('/api/getID', users.getID)
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
