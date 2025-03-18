@@ -20,7 +20,7 @@ function loginAttempt(req, res){
         case 0:
             return res.status(200).json({msg: 'Valid login for std user'}); break;
         case 1:
-            return res.status(200).json({msg: 'Valid login for administrator'}; break;
+            return res.status(200).json({msg: 'Valid login for administrator'}); break;
     }
 
     //const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
