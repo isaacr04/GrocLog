@@ -6,6 +6,7 @@ const secret = "never-gonna-give-you-up"
 
 console.log("Accessing login.js...");
 
+//Processes login attempt on homepage
 async function loginAttempt(req, res){
     console.log(req.body)
     const { user, pw } = req.body;
@@ -33,6 +34,7 @@ async function loginAttempt(req, res){
     //const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
 }
 
+//Returns permission level of user if the login is valid, -1 otherwise
 async function validateLogin(user, pw) {
     console.log("Beginning of validateLogin function");
     const query = 'SELECT * FROM users WHERE username = ? AND password = ? LIMIT 1';

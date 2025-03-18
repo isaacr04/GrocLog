@@ -1,8 +1,3 @@
-getUserId().then(id => {
-    console.log("id returned: ",id)
-    userId = id;
-    console.log("User ID:", userId);
-});
 const itemList = document.getElementById('item-list');
 const totalSpend = document.getElementById('total-spend');
 const USDollar = new Intl.NumberFormat('en-US', {
@@ -51,27 +46,29 @@ function addButtons(li, entry) {
 async function getUserId(){
     let data = JSON.stringify({user: sessionStorage.getItem('user'), pw: sessionStorage.getItem('pw')})
     console.log("data to fetch: ",data)
-    fetch("/api/getID", {
+    return fetch("/api/getID", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: data
     })
-    .then(console.log("hello"))
     .then(response => response.json())
     .then(data => {
         console.log("return data: ",data)
-        let code = data.code;
-        switch (code) {
+        let id = data.id;
+        switch (id) {
             case -1:
-                window.location.href='/';
-                break;
+                return -1;
             default:
-                return code;
+                console.log("code to get returned to initial f(x): ",id)
+                return id;
         }
     })
-    .catch(error => console.error("Error:", error));
+    .catch(error => {
+        console.error("Error:", error);
+        return -1;
+    });
 }
 
 // Function to load items from database
@@ -181,12 +178,16 @@ async function searchItems(event) {
     });
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    // Load items initially
-    loadItems();
+document.addEventListener("DOMContentLoaded", async function () {
+    userId = await getUserId();
+    console.log("id returned:", userId);
 
-
-})
+    if (userId !== -1) {
+        loadItems(userId);
+    } else {
+        console.error("Invalid user ID, skipping item loading.");
+    }
+});
 
 document.getElementById("Add").addEventListener("submit", addItem);
 document.getElementById("Search").addEventListener("submit", searchItems);
