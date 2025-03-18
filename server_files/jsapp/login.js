@@ -1,6 +1,7 @@
 //Functions to verify user login
 
 const users = require('./users');
+const secret = "never-gonna-give-you-up"
 
 console.log("Accessing login.js...");
 
@@ -38,5 +39,6 @@ function validate(user,pw){
     });
 }
 module.exports = {
-    loginAttempt
+    loginAttempt,
+    validate
 }

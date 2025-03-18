@@ -19,7 +19,7 @@ function getUsers(req, res) {
 
 // Takes info from req and returns a message in res
 function addUser(req, res) {
-    const { username, password } = req.body;
+    const { username, password, perm } = req.body;
     if (!username || !password) {
         return res.status(400).json({ error: 'All fields are required' });
     }
@@ -36,5 +36,5 @@ function addUser(req, res) {
 
 module.exports = {
     getUsers,
-    addUser,
+    addUser
 }
