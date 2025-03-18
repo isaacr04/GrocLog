@@ -1,4 +1,4 @@
-//Functions to verify user login,
+//Functions to verify user login
 
 const users = require('./users');
 
@@ -13,14 +13,30 @@ function loginAttempt(req, res){
         return res.status(400).json({ error: 'All fields are required' });
     }
 
-    let validLogin = validate(user,pw)
-    else{
-        res.redirect('/itemlog');
+    switch(validate(user,pw)) {
+        case -1:
+            return res.status(401).json({msg: 'Invalid login'}); break;
+        case 0:
+            return res.status(200).json({msg: 'Valid login for std user'}); break;
+        case 1:
+            return res.status(200).json({msg: 'Valid login for administrator'}; break;
     }
 
     //const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
 }
 
+
+function validate(user,pw){
+    const query = 'SELECT * FROM users WHERE user_id = ? LIMIT 1';
+
+    db.query(query, [username, password], (err, result) => {
+        if (err) {
+            return -1;
+        }
+        else{
+            return result.perm;
+    });
+}
 module.exports = {
     loginAttempt
 }
