@@ -5,12 +5,16 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const itemlog = require('./itemlog');
 const users = require('./users');
+const login = require('./login')
 
 const app = express();
 const port = 3000;
 
 app.use(cors());
 app.use(bodyParser.json());
+
+//Routes for login
+app.post('/api/login', login.loginAttempt)
 
 // Routes for itemlog
 app.post('/api/additem', itemlog.addItem);
