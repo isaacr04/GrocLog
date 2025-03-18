@@ -21,7 +21,25 @@ const login = (user, pw) => {
         },
         body: data
     })
-        .then(response => response.text())
-        .then(data => console.log(data))
+        .then(response => response.json())
+        .then(data => {
+            console.log("data: ",data)
+            let code = data.code;
+            console.log("data.code: ", code);
+
+            switch (code) {
+                case -1:
+                    console.log("ur bad lol");
+                    break;
+                case 0:
+                    sessionStorage.setItem('user',user);
+                    sessionStorage.setItem('pw',pw)
+                    window.location.href = '/itemlog';
+                    break;
+                case 1:
+                    console.log("valid admin input");
+                    break;
+            }
+        })
         .catch(error => console.error("Error:", error));
 }

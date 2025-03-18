@@ -1,11 +1,12 @@
 //Functions to verify user login
 
 const users = require('./users');
+const db = require('./db');
 const secret = "never-gonna-give-you-up"
 
 console.log("Accessing login.js...");
 
-function loginAttempt(req, res){
+async function loginAttempt(req, res){
     console.log(req.body)
     const { user, pw } = req.body;
     console.log("username: ",user)
@@ -14,31 +15,53 @@ function loginAttempt(req, res){
         return res.status(400).json({ error: 'All fields are required' });
     }
 
-    switch(validate(user,pw)) {
+    let validation = await(validateLogin(user,pw))
+
+    console.log("validate(user,pw): ",validation)
+    switch(validation) {
         case -1:
-            return res.status(401).json({msg: 'Invalid login'}); break;
+            console.log(-1)
+            return res.status(401).json({code: -1}); break;
         case 0:
-            return res.status(200).json({msg: 'Valid login for std user'}); break;
+            console.log(0)
+            return res.status(200).json({code: 0}); break;
         case 1:
-            return res.status(200).json({msg: 'Valid login for administrator'}); break;
+            console.log(1)
+            return res.status(200).json({code: 1}); break;
     }
 
     //const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
 }
 
+async function validateLogin(user, pw) {
+    console.log("Beginning of validateLogin function");
 
-function validate(user,pw){
-    const query = 'SELECT * FROM users WHERE user_id = ? LIMIT 1';
 
-    db.query(query, [username, password], (err, result) => {
-        if (err) {
+    const query = 'SELECT * FROM users WHERE username = ? AND password = ? LIMIT 1';
+
+    try {
+
+        const [rows] = await db.promise().query(query, [user, pw]);
+
+        console.log("[rows]: ",rows)
+
+        if (rows.length === 0) {
+            console.log("Error: No user found or incorrect password");
             return -1;
+        } else {
+            console.log("No error, user exists with correct password");
+            console.log("Result (perm):", rows[0].perm);
+            return rows[0].perm;
         }
-        else{
-            return result.perm;
-    });
+    }
+    catch (error) {
+
+        console.error("Database error:", error);
+
+    }
 }
+
 module.exports = {
     loginAttempt,
-    validate
+    validateLogin
 }
