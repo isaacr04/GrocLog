@@ -23,9 +23,7 @@ const login = (user, pw) => {
     })
         .then(response => response.json())
         .then(data => {
-            console.log("data: ",data)
             let code = data.code;
-            console.log("data.code: ", code);
 
             switch (code) {
                 case -1:
