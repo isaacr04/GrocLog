@@ -7,11 +7,11 @@ console.log("Accessing login.js...");
 function loginAttempt(req, res) {
     const { username, password } = req.body;
     if (!username || !password) {
-        return res.status(400).json({ error: 'All fields are required' });
+        return res.status(261).json({ error: 'All fields are required' });
     }
     else{
         return JSON.stringify({message: "hi!",user:username,pw:password})
     }
 
-    const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
+    //const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
 }
