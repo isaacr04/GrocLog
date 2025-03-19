@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Page</title>
+  <link rel="stylesheet" href="../menupage.css">
+</head>
+<body>
+  <h1>Admin Page</h1>
+
+  <!-- Add User Form -->
+  <form id="Add" class="item-form">
+      <section class="form-piece">
+          <label for="username">Username:</label>
+          <input name="username" id="username" required>
+      </section>
+      <section class="form-piece">
+          <label for="password">Password:</label>
+          <input name="password" id="password" type="password" required>
+      </section>
+      <section class="form-piece">
+          <label for="role">Role:</label>
+          <input name="role" id="role" required>
+      </section>
+      <input type="submit" value="Add User">
+  </form>
+
+  <!-- Search User Form -->
+  <form id="Search" class="item-form">
+      <section class="form-piece">
+          <label for="usernameSearch">User:</label>
+          <input name="username" id="usernameSearch">
+      </section>
+      <section class="form-piece">
+          <label for="passwordSearch">Price:</label>
+          <input name="password" id="passwordSearch" type="password">
+      </section>
+      <section class="form-piece">
+          <label for="roleSearch">Role:</label>
+          <input name="role" id="roleSearch">
+      </section>
+      <input type="submit" value="Search User">
+      <input type="reset" value="Reset">
+  </form>
+
+  <!-- Display Users -->
+  <h2>Users</h2>
+  <ul id="item-list"></ul>
+
+  <script src="adminscript.js"></script>
+</body>
+</html>
