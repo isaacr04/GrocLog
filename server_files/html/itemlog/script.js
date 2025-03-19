@@ -45,7 +45,7 @@ function addButtons(li, entry) {
 
 async function getUserId(){
     let data = JSON.stringify({user: sessionStorage.getItem('user'), pw: sessionStorage.getItem('pw')})
-    console.log("data to fetch: ",data)
+    //console.log("data to fetch: ",data)
     return fetch("/api/getID", {
         method: "POST",
         headers: {
@@ -55,18 +55,18 @@ async function getUserId(){
     })
     .then(response => response.json())
     .then(data => {
-        console.log("return data: ",data)
+        //console.log("return data: ",data)
         let id = data.id;
         switch (id) {
             case -1:
                 return -1;
             default:
-                console.log("code to get returned to initial f(x): ",id)
+                //console.log("code to get returned to initial f(x): ",id)
                 return id;
         }
     })
     .catch(error => {
-        console.error("Error:", error);
+        //console.error("Error:", error);
         return -1;
     });
 }
