@@ -35,7 +35,9 @@ const login = (user, pw) => {
                     window.location.href = '/itemlog';
                     break;
                 case 1:
-                    console.log("valid admin input");
+                    sessionStorage.setItem('user',user);
+                    sessionStorage.setItem('pw',pw)
+                    window.location.href = '/admin';
                     break;
             }
         })

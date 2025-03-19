@@ -1,6 +1,5 @@
 //Functions to verify user login
 
-const users = require('./users');
 const db = require('./db');
 const secret = "never-gonna-give-you-up"
 
@@ -22,13 +21,13 @@ async function loginAttempt(req, res){
     switch(validation) {
         case -1:
             console.log(-1)
-            return res.status(401).json({code: -1}); break;
+            return res.status(401).json({code: -1});
         case 0:
             console.log(0)
-            return res.status(200).json({code: 0}); break;
+            return res.status(200).json({code: 0});
         case 1:
             console.log(1)
-            return res.status(200).json({code: 1}); break;
+            return res.status(200).json({code: 1});
     }
 
     //const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
@@ -36,17 +35,17 @@ async function loginAttempt(req, res){
 
 //Returns permission level of user if the login is valid, -1 otherwise
 async function validateLogin(user, pw) {
-    //console.log("Beginning of validateLogin function");
+    console.log("Beginning of validateLogin function");
     const query = 'SELECT * FROM users WHERE username = ? AND password = ? LIMIT 1';
     try {
         const [rows] = await db.promise().query(query, [user, pw]);
-        //console.log("[rows]: ",rows)
+        console.log("[rows]: ",rows)
         if (rows.length === 0) {
-            //console.log("Error: No user found or incorrect password");
+            console.log("Error: No user found or incorrect password");
             return -1;
         } else {
-            //console.log("No error, user exists with correct password");
-            //console.log("Result (perm):", rows[0].perm);
+            console.log("No error, user exists with correct password");
+            console.log("Result (perm):", rows[0].perm);
             return rows[0].perm;
         }
     }
@@ -56,6 +55,5 @@ async function validateLogin(user, pw) {
 }
 
 module.exports = {
-    loginAttempt,
-    validateLogin
+    loginAttempt
 }

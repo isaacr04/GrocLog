@@ -27,7 +27,7 @@ function addUser(req, res) {
     const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
     db.query(query, [username, password], (err, result) => {
         if (err) {
-            //console.error('Error inserting user:', err);
+            console.error('Error inserting user:', err);
             return res.status(500).json({ error: 'Database error' });
         }
         res.json({ message: 'User added successfully', id: result.insertId });
@@ -44,13 +44,13 @@ async function getID(req, res){
     try {
         const [rows] = await db.promise().query(query, [user, pw]);
         if (rows.length === 0) {
-            //console.log("Error: No user found or incorrect password");
+            console.log("Error: No user found or incorrect password");
             return res.status(400).json({ id: -1 });
         } else {
-            //console.log("No error, user exists with correct password");
-            //console.log("Result (perm):", rows[0].perm);
-            //console.log("User id to return: ",rows[0].user_id)
-            if( rows[0].perm == 1) {
+            console.log("No error, user exists with correct password");
+            console.log("Result (perm):", rows[0].perm);
+            console.log("User id to return: ",rows[0].user_id)
+            if( rows[0].perm === 1) {
                 return res.status(400).json({ id: -1 });
             }
             else{
