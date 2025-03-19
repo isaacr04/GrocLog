@@ -17,7 +17,6 @@ function getUsers(req, res) {
     });
 }
 
-// Takes info from req and returns a message in res
 function addUser(req, res) {
     const { username, password, perm } = req.body;
     if (!username || !password) {
@@ -31,6 +30,34 @@ function addUser(req, res) {
             return res.status(500).json({ error: 'Database error' });
         }
         res.json({ message: 'User added successfully', id: result.insertId });
+    });
+}
+
+// Takes info from req and returns a json of SLQ query results
+function searchUsers(req, res) {
+    const { username, password, perm } = req.body;
+    let query = 'SELECT * FROM users WHERE true'; //Always true, allows optional filters to be applied
+    let params = [];
+
+    if (username) {
+        query += ' AND username LIKE ?';
+        params.push(`%${username}%`);
+    }
+    if (password) {
+        query += ' AND password = ?';
+        params.push(password);
+    }
+    if (perm) {
+        query += ' AND perm = ?';
+        params.push(perm);
+    }
+
+    db.query(query, params, (err, results) => {
+        if (err) {
+            console.error('Error searching users:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json(results);
     });
 }
 
@@ -56,6 +83,26 @@ function deleteUser(req, res) {
     });
 }
 
+function editUser(req, res) {
+    const {user_id, username, password, perm } = req.body;
+    if (!user_id || !username || !password || !perm) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    const query = 'UPDATE users SET username=?, password=?, perm=? WHERE user_id=?';
+    db.query( query, [username, password, perm, user_id], (err, result) => {
+            if (err) {
+                console.error('Error updating user:', err);
+                return res.status(500).json({ error: 'Database error' });
+            }
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ error: 'No matching user found to update' });
+            }
+            res.json({ message: 'User updated successfully' });
+        }
+    );
+}
+
 async function getID(req, res){
     const { user, pw } = req.body;
     if (!user || !pw) {
@@ -73,7 +120,7 @@ async function getID(req, res){
             console.log("Result (perm):", rows[0].perm);
             console.log("User id to return: ",rows[0].user_id)
             if( rows[0].perm === 1) {
-                return res.status(400).json({ id: -1 });
+                return res.status(400).json({ id: 0 });
             }
             else{
                 return res.status(200).json({id: rows[0].user_id})
@@ -90,6 +137,8 @@ async function getID(req, res){
 module.exports = {
     getUsers,
     addUser,
+    searchUsers,
     deleteUser,
+    editUser,
     getID,
 }

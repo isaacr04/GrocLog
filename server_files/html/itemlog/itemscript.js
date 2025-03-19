@@ -56,14 +56,7 @@ async function getUserId(){
     .then(response => response.json())
     .then(data => {
         //console.log("return data: ",data)
-        let id = data.id;
-        switch (id) {
-            case -1:
-                return -1;
-            default:
-                //console.log("code to get returned to initial f(x): ",id)
-                return id;
-        }
+        return data.id;
     })
     .catch(error => {
         console.error("Error:", error);
@@ -115,7 +108,7 @@ async function addItem(event) {
 // Function to handle deleting an item
 async function deleteItem(entry) {
     await fetch("/api/deleteitem", {
-        method: "POST",
+        method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             user_id: userId,
@@ -135,7 +128,7 @@ async function editItem(entry) {
 
     if (newItem && newPrice && newDate) {
         await fetch("/api/edititem", {
-            method: "POST",
+            method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 user_id: userId,
@@ -182,10 +175,12 @@ document.addEventListener("DOMContentLoaded", async function () {
     userId = await getUserId();
     console.log("id returned:", userId);
 
-    if (userId !== -1) {
-        loadItems(userId);
-    } else {
+    if (userId === undefined || userId === -1 || userId === 0) {
         console.error("Invalid user ID, skipping item loading.");
+        window.location.href = '/';
+    }
+    else {
+        loadItems(userId);
     }
 });
 

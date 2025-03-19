@@ -19,13 +19,15 @@ app.post('/api/login', login.loginAttempt)
 // Routes for itemlog
 app.post('/api/additem', itemlog.addItem);
 app.post('/api/searchitem', itemlog.searchItems);
-app.post('/api/deleteitem', itemlog.deleteItem);
-app.post("/api/edititem", itemlog.editItem);
+app.delete('/api/deleteitem', itemlog.deleteItem);
+app.put("/api/edititem", itemlog.editItem);
 
 //Routes for users
 app.post('/api/adduser', users.addUser);
 app.post('/api/getusers', users.getUsers);
-app.post('/api/deleteuser', users.deleteUser);
+app.post('/api/searchusers', users.searchUsers);
+app.delete('/api/deleteuser', users.deleteUser);
+app.put('/api/edituser', users.editUser);
 app.post('/api/getID', users.getID)
 
 app.listen(port, () => {
