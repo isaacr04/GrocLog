@@ -8,9 +8,9 @@ console.log('Accessing users.js...');
 function getUsers(req, res) {
     const query = 'SELECT * FROM users';
 
-    db.query(query, params, (err, results) => {
+    db.query(query, (err, results) => {
         if (err) {
-            console.error('Error searching items:', err);
+            console.error('Error searching users:', err);
             return res.status(500).json({ error: 'Database error' });
         }
         res.json(results);

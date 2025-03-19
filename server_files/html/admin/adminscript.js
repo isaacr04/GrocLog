@@ -30,9 +30,11 @@ async function loadUsers() {
     itemList.innerHTML = "";
     results.forEach(entry => {
         const li = document.createElement("li");
-        li.textContent = `${entry.user_id}: Username: ${entry.user} Password: ${entry.password} Role: ${entry.role}`;
+        li.textContent = `${entry.user_id}: Username: ${entry.username} Password: ${entry.password} Perm: ${entry.perm}`;
 
         addButtons(li, entry);
         itemList.appendChild(li);
     });
 }
+
+loadUsers();
