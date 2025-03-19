@@ -51,7 +51,7 @@ async function getID(req, res){
             //console.log("Result (perm):", rows[0].perm);
             //console.log("User id to return: ",rows[0].user_id)
             if( rows[0].perm == 1) {
-                return res.status(400).json({ id: -2 });
+                return res.status(400).json({ id: -1 });
             }
             else{
                 return res.status(200).json({id: rows[0].user_id})

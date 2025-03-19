@@ -27,7 +27,7 @@ const login = (user, pw) => {
 
             switch (code) {
                 case -1:
-                    console.log("Invalid Input");
+                    console.log("ur bad lol");
                     break;
                 case 0:
                     sessionStorage.setItem('user',user);
@@ -35,9 +35,7 @@ const login = (user, pw) => {
                     window.location.href = '/itemlog';
                     break;
                 case 1:
-                    sessionStorage.setItem('user',user);
-                    sessionStorage.setItem('pw',pw)
-                    window.location.href = '/admin';
+                    console.log("valid admin input");
                     break;
             }
         })
