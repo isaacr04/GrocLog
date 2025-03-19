@@ -7,12 +7,12 @@ function addButtons(li, entry) {
     // Edit Button
     const editButton = document.createElement("button");
     editButton.textContent = "Edit";
-    editButton.onclick = () => editItem(entry);
+    editButton.onclick = () => editUser(entry);
 
     // Delete Button
     const deleteButton = document.createElement("button");
     deleteButton.textContent = "Delete";
-    deleteButton.onclick = () => deleteItem(entry);
+    deleteButton.onclick = () => deleteUser(entry);
 
     //Add Buttons to list item
     buttonDiv.appendChild(editButton);
@@ -37,4 +37,36 @@ async function loadUsers() {
     });
 }
 
+// Function to handle adding a user
+async function addUser(event) {
+    event.preventDefault();
+
+    const username = document.getElementById("usernameAdd").value;
+    const password = document.getElementById("passwordAdd").value;
+    const perm = document.getElementById("permAdd").value;
+
+    await fetch("/api/adduser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password, perm })
+    });
+
+    // Reload users after adding
+    loadUsers();
+}
+
+// Function to handle deleting a user
+async function deleteUser(entry) {
+    await fetch('/api/deleteuser', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({user_id : entry.user_id}),
+    });
+    loadUsers();
+}
+
 loadUsers();
+
+document.getElementById("Add").addEventListener("submit", addUser);
+//document.getElementById("Search").addEventListener("submit", searchUsers);
+document.getElementById("Search").addEventListener("reset", loadUsers);

@@ -7,7 +7,7 @@ const USDollar = new Intl.NumberFormat('en-US', {
 
 // Returns formatted date string:
 // Default (forHuman == false): YYYY-MM-DD
-// forHumann == true: (Short Month), dd, yyyy
+// forHuman == true: (Short Month), dd, yyyy
 function formatDate(dateString, forHuman = false) {
     const date = new Date(dateString);
     let dateStr = date.toISOString().split('T')[0]; //Extracts simple YYYY-MM-DD string

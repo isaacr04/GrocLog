@@ -20,11 +20,12 @@ app.post('/api/login', login.loginAttempt)
 app.post('/api/additem', itemlog.addItem);
 app.post('/api/searchitem', itemlog.searchItems);
 app.post('/api/deleteitem', itemlog.deleteItem);
-app.post('/api/edititem', itemlog.editItem);
+app.post("/api/deleteuser", itemlog.editItem);
 
 //Routes for users
 app.post('/api/adduser', users.addUser);
 app.post('/api/getusers', users.getUsers);
+app.post('/api/deleteuser', users.deleteUser);
 app.post('/api/getID', users.getID)
 
 app.listen(port, () => {

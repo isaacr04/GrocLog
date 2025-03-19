@@ -24,13 +24,31 @@ function addUser(req, res) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
-    const query = 'INSERT INTO users (username, password) VALUES (?, ?)';
-    db.query(query, [username, password], (err, result) => {
+    const query = 'INSERT INTO users (username, password, perm) VALUES (?, ?, ?)';
+    db.query(query, [username, password, perm], (err, result) => {
         if (err) {
             console.error('Error inserting user:', err);
             return res.status(500).json({ error: 'Database error' });
         }
         res.json({ message: 'User added successfully', id: result.insertId });
+    });
+}
+
+function deleteUser(req, res) {
+    const user_id   = req.user_id;
+    console.log('User_id to delete: ${user_id}');
+
+    if (!user_id) {
+        return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    const query = 'DELETE FROM users WHERE user_id=${user_id}';
+    db.query(query, (err, result) => {
+        if (err) {
+            console.error('Error deleting user:', err);
+            return res.status(500).json({ error: 'Database error' });
+        }
+        res.json({ message: 'User deleted successfully'});
     });
 }
 
@@ -68,5 +86,6 @@ async function getID(req, res){
 module.exports = {
     getUsers,
     addUser,
-    getID
+    deleteUser,
+    getID,
 }
