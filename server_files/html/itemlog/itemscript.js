@@ -56,14 +56,7 @@ async function getUserId(){
     .then(response => response.json())
     .then(data => {
         //console.log("return data: ",data)
-        let id = data.id;
-        switch (id) {
-            case -1:
-                return -1;
-            default:
-                //console.log("code to get returned to initial f(x): ",id)
-                return id;
-        }
+        return data.id
     })
     .catch(error => {
         console.error("Error:", error);
@@ -181,11 +174,13 @@ async function searchItems(event) {
 document.addEventListener("DOMContentLoaded", async function () {
     userId = await getUserId();
     console.log("id returned:", userId);
-
-    if (userId !== -1) {
+    if (userId > 0){
         loadItems(userId);
+    }
+    else if (userId == -2) {
+        window.location.href='/admin';
     } else {
-        console.error("Invalid user ID, skipping item loading.");
+        window.location.href='/';
     }
 });
 
