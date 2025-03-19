@@ -20,7 +20,7 @@ app.post('/api/login', login.loginAttempt)
 app.post('/api/additem', itemlog.addItem);
 app.post('/api/searchitem', itemlog.searchItems);
 app.post('/api/deleteitem', itemlog.deleteItem);
-app.post("/api/deleteuser", itemlog.editItem);
+app.post("/api/edititem", itemlog.editItem);
 
 //Routes for users
 app.post('/api/adduser', users.addUser);
