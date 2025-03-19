@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Page</title>
   <link rel="stylesheet" href="../sitestyle.css">
 </head>
@@ -10,37 +11,39 @@
 
   <!-- Add User Form -->
   <form id="Add" class="item-form">
-      <section class="form-piece">
+      <div class="form-piece">
           <label for="usernameAdd">Username:</label>
           <input name="username" id="usernameAdd" required>
-      </section>
-      <section class="form-piece">
+      </div>
+      <div class="form-piece">
           <label for="passwordAdd">Password:</label>
           <input name="password" id="passwordAdd" type="password" required>
-      </section>
-      <section class="form-piece">
+      </div>
+      <div class="form-piece">
           <label for="permAdd">Perm:</label>
           <input name="perm" id="permAdd" required>
-      </section>
+      </div>
       <input type="submit" value="Add User">
   </form>
 
   <!-- Search User Form -->
   <form id="Search" class="item-form">
-      <section class="form-piece">
+      <div class="form-piece">
           <label for="usernameSearch">Username:</label>
           <input name="username" id="usernameSearch">
-      </section>
-      <section class="form-piece">
+      </div>
+      <div class="form-piece">
           <label for="passwordSearch">Password:</label>
           <input name="password" id="passwordSearch" type="password">
-      </section>
-      <section class="form-piece">
+      </div>
+      <div class="form-piece">
           <label for="permSearch">Perm:</label>
           <input name="perm" id="permSearch">
-      </section>
-      <input type="submit" value="Search User">
-      <input type="reset" value="Reset">
+      </div>
+      <div class="form-piece">
+          <input type="submit" value="Search User">
+          <input type="reset" value="Reset">
+      </div>
   </form>
 
   <!-- Display Users -->
