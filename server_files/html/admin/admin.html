@@ -21,7 +21,10 @@
       </div>
       <div class="form-piece">
           <label for="permAdd">Perm:</label>
-          <input name="perm" id="permAdd" required>
+          <select name="perm" id="permAdd" required>
+              <option value=0>User: 0</option>
+              <option value=1>Admin: 1</option>
+          </select>
       </div>
       <input type="submit" value="Add User">
   </form>
@@ -38,7 +41,10 @@
       </div>
       <div class="form-piece">
           <label for="permSearch">Perm:</label>
-          <input name="perm" id="permSearch">
+          <select name="perm" id="permSearch" required>
+              <option value=0>User: 0</option>
+              <option value=1>Admin: 1</option>
+          </select>
       </div>
       <div class="form-piece">
           <input type="submit" value="Search User">
