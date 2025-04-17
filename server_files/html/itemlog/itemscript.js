@@ -11,6 +11,7 @@ const atDateCheckbox = document.getElementById("atDateCheckbox");
 const rangeDateCheckbox = document.getElementById("rangeDateCheckbox");
 const dateSearch = document.getElementById("dateSearch");
 const dateRange = document.getElementById("dateRange");
+const userId = parseInt(sessionStorage.getItem('userId'));
 
 
 // Returns formatted date string:
@@ -51,30 +52,9 @@ function addButtons(li, entry) {
     li.appendChild(buttonDiv);
 }
 
-async function getUserId(){
-    let data = JSON.stringify({user: sessionStorage.getItem('user'), pw: sessionStorage.getItem('pw')})
-    //console.log("data to fetch: ",data)
-    return fetch("/api/getID", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: data
-    })
-    .then(response => response.json())
-    .then(data => {
-        //console.log("return data: ",data)
-        return data.id;
-    })
-    .catch(error => {
-        console.error("Error:", error);
-        return -1;
-    });
-}
-
 function addListItem(list, entry) {
     const li = document.createElement("li");
-    const formattedDate = formatDate(entry.purchase_date, true);
+    const formattedDate = formatDate(entry.purchaseDate, true);
 
     // Create item display text
     const itemText = document.createElement("div");
@@ -118,7 +98,7 @@ async function loadItems() {
     const response = await fetch("/api/searchitem", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: userId })
+        body: JSON.stringify({ userId: userId })
     });
     const results = await response.json();
     itemList.innerHTML = "";
@@ -147,10 +127,10 @@ async function addItem(event) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            user_id: userId,
+            userId: userId,
             item,
             price,
-            purchase_date: purchaseDate,
+            purchaseDate: purchaseDate,
             location,
             brand,
             type
@@ -167,10 +147,10 @@ async function deleteItem(entry) {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            user_id: userId,
+            userId: userId,
             item: entry.item,
             price: entry.price,
-            purchase_date: formatDate(entry.purchase_date), // Original date format
+            purchaseDate: formatDate(entry.purchaseDate), // Original date format
         })
     });
     loadItems();
@@ -183,7 +163,7 @@ async function editItem(entry) {
         <div class="edit-form">
             <label>Item Name: <input type="text" id="editItemName" value="${entry.item}"></label>
             <label>Price: <input type="number" step="0.01" id="editItemPrice" value="${entry.price}"></label>
-            <label>Date: <input type="date" id="editItemDate" value="${formatDate(entry.purchase_date)}"></label>
+            <label>Date: <input type="date" id="editItemDate" value="${formatDate(entry.purchaseDate)}"></label>
             <label>Location: <input type="text" id="editItemLocation" list="locationOptions" value="${entry.location || ''}"></label>
             <label>Brand: <input type="text" id="editItemBrand" list="brandOptions" value="${entry.brand || ''}"></label>
             <label>Type: <input type="text" id="editItemType" list="typeOptions" value="${entry.type || ''}"></label>
@@ -218,10 +198,10 @@ async function editItem(entry) {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    user_id: entry.user_id,
+                    userId: userId,
                     item: entry.item,
                     price: entry.price,
-                    purchase_date: formatDate(entry.purchase_date),
+                    purchaseDate: formatDate(entry.purchaseDate),
                     newItem: item,
                     newPrice: price,
                     newDate: date,
@@ -249,7 +229,7 @@ async function searchItems(event) {
     const type = document.getElementById("typeSearch").value.trim();
 
     const searchParams = {
-        user_id: userId,
+        userId: userId,
         item,
         price,
         location,
@@ -264,7 +244,7 @@ async function searchItems(event) {
             return;
         }
         else {
-            searchParams.purchase_date = dateSearchValue;
+            searchParams.purchaseDate = dateSearchValue;
         }
     }
     else if (rangeDateCheckbox.checked) {
@@ -310,15 +290,15 @@ function activateRangeDate() {
 }
 
 document.addEventListener("DOMContentLoaded", async function () {
-    userId = await getUserId();
-    console.log("id returned:", userId);
+    userRole = parseInt(sessionStorage.getItem("role"));
+    console.log("role returned:", userRole);
 
-    if (userId === undefined || userId === -1 || userId === 0) {
-        console.error("Invalid user ID, skipping item loading.");
-        window.location.href = '/';
+    if (userRole === 0) {
+        loadItems();
     }
     else {
-        loadItems(userId);
+        console.error("Invalid user role, skipping item loading.");
+        window.location.href = '/';
     }
 });
 

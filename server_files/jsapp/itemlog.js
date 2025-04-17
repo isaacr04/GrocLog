@@ -1,96 +1,94 @@
-//Functions needed to access and manage itemlog table MySQL database
+const { Item } = require('./db');
 
-const db = require('./db');
+console.log('Accessing itemlog.js...');
 
-console.log("Accessing itemlog.js...");
-
-// Takes info from req and returns a message in res
-function addItem(req, res) {
-    const { user_id, item, price, purchase_date, location, brand, type } = req.body;
-    if (!user_id || !item || !price || !purchase_date) {
+// Add new item
+async function addItem(req, res) {
+    const { userId, item, price, purchaseDate, location, brand, type } = req.body;
+    if (!userId || !item || !price || !purchaseDate) {
         return res.status(400).json({ error: 'Required fields missing' });
     }
 
-    const query = 'INSERT INTO itemlog (user_id, item, price, purchase_date, location, brand, type) VALUES (?, ?, ?, ?, ?, ?, ?)';
-    db.query(query, [user_id, item, price, purchase_date, location || null, brand || null, type || null], (err, result) => {
-        if (err) {
-            console.error('Error inserting item:', err);
-            return res.status(500).json({ error: 'Database error' });
-        }
-        res.json({ message: 'Item added successfully', id: result.insertId });
+    const newItem = new Item({
+        userId: userId,
+        item,
+        price,
+        purchaseDate: purchaseDate,
+        location: location || null,
+        brand: brand || null,
+        type: type || null
     });
+
+    try {
+        const savedItem = await newItem.save();
+        res.json({ message: 'Item added successfully', id: savedItem._id });
+    } catch (err) {
+        console.error('Error inserting item:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
 }
 
-// Takes info from req and returns a json of SLQ query results
-function searchItems(req, res) {
-    const { user_id, item, price, purchase_date, start_date, end_date, location, brand, type } = req.body;
-    let query = 'SELECT * FROM itemlog WHERE user_id = ?';
-    let params = [user_id];
+// Search items
+async function searchItems(req, res) {
+    const { userId, item, price, purchaseDate, start_date, end_date, location, brand, type } = req.body;
+    if (!userId) {
+        return res.status(400).json({ error: 'User ID is required' });
+    }
 
-    if (item) {
-        query += ' AND item LIKE ?';
-        params.push(`%${item}%`);
-    }
-    if (price) {
-        query += ' AND price = ?';
-        params.push(price);
-    }
-    if (purchase_date) {
-        query += ' AND purchase_date = ?';
-        params.push(purchase_date);
+    let filter = { userId: userId };
+
+    if (item) filter.item = { $regex: item, $options: 'i' };
+    if (price) filter.price = price;
+    if (purchaseDate) {
+        filter.purchaseDate = purchaseDate;
     } else if (start_date && end_date) {
-        query += ' AND purchase_date BETWEEN ? AND ?';
-        params.push(start_date, end_date);
+        filter.purchaseDate = { $gte: start_date, $lte: end_date };
     }
-    if (location) {
-        query += ' AND location = ?';
-        params.push(location);
-    }
-    if (brand) {
-        query += ' AND brand = ?';
-        params.push(brand);
-    }
-    if (type) {
-        query += ' AND type = ?';
-        params.push(type);
-    }
+    if (location) filter.location = location;
+    if (brand) filter.brand = brand;
+    if (type) filter.type = type;
 
-    db.query(query, params, (err, results) => {
-        if (err) {
-            console.error('Error searching items:', err);
-            return res.status(500).json({ error: 'Database error' });
-        }
-        res.json(results);
-    });
+    try {
+        const items = await Item.find(filter);
+        res.json(items);
+    } catch (err) {
+        console.error('Error searching items:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
 }
 
-//Takes info from req and returns a message in res
-function deleteItem(req, res) {
-    const { user_id, item, price, purchase_date } = req.body;
-    if (!user_id || !item || !price || !purchase_date) {
+// Delete item
+async function deleteItem(req, res) {
+    const { userId, item, price, purchaseDate } = req.body;
+    if (!userId || !item || !price || !purchaseDate) {
         return res.status(400).json({ error: 'All fields are required for deletion' });
     }
 
-    const query = 'DELETE FROM itemlog WHERE user_id = ? AND item = ? AND price = ? AND purchase_date = ?';
-    db.query(query, [user_id, item, price, purchase_date], (err, result) => {
-        if (err) {
-            console.error('Error deleting item:', err);
-            return res.status(500).json({ error: 'Database error' });
-        }
-        if (result.affectedRows === 0) {
+    try {
+        const result = await Item.deleteOne({
+            userId: userId,
+            item,
+            price,
+            purchaseDate: purchaseDate
+        });
+
+        if (result.deletedCount === 0) {
             return res.status(404).json({ error: 'No matching item found' });
         }
         res.json({ message: 'Item deleted successfully' });
-    });
+    } catch (err) {
+        console.error('Error deleting item:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
 }
 
-//Takes info from req for search and update values, and returns message in res
-function editItem(req, res) {
+// Edit item
+async function editItem(req, res) {
     const {
-        user_id,
+        userId,
         item,
         price,
-        purchase_date,
+        purchaseDate,
         newItem,
         newPrice,
         newDate,
@@ -99,54 +97,43 @@ function editItem(req, res) {
         newType
     } = req.body;
 
-    if (!user_id || !item || !price || !purchase_date || !newItem || !newPrice || !newDate) {
+    if (!userId || !item || !price || !purchaseDate || !newItem || !newPrice || !newDate) {
         return res.status(400).json({ error: 'Required fields missing for editing' });
     }
 
-    const query = `
-        UPDATE itemlog
-        SET item = ?,
-            price = ?,
-            purchase_date = ?,
-            location = ?,
-            brand = ?,
-            type = ?
-        WHERE user_id = ?
-          AND item = ?
-          AND price = ?
-          AND purchase_date = ?
-    `;
+    try {
+        const result = await Item.updateOne(
+            {
+                userId,
+                item,
+                price,
+                purchaseDate,
+            },
+            {
+                $set: {
+                    item: newItem,
+                    price: newPrice,
+                    purchaseDate: newDate,
+                    location: newLocation || null,
+                    brand: newBrand || null,
+                    type: newType || null
+                }
+            }
+        );
 
-    db.query(
-        query,
-        [
-            newItem,
-            newPrice,
-            newDate,
-            newLocation,
-            newBrand,
-            newType,
-            user_id,
-            item,
-            price,
-            purchase_date
-        ],
-        (err, result) => {
-            if (err) {
-                console.error('Error updating item:', err);
-                return res.status(500).json({ error: 'Database error' });
-            }
-            if (result.affectedRows === 0) {
-                return res.status(404).json({ error: 'No matching item found to update' });
-            }
-            res.json({ message: 'Item updated successfully' });
+        if (result.modifiedCount === 0) {
+            return res.status(404).json({ error: 'No matching item found to update' });
         }
-    );
+        res.json({ message: 'Item updated successfully' });
+    } catch (err) {
+        console.error('Error updating item:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
 }
 
 module.exports = {
     addItem,
     searchItems,
     deleteItem,
-    editItem,
+    editItem
 };
