@@ -10,19 +10,9 @@ mongoose.connect('mongodb://localhost:27017/groclog', {
 
 // Create user schema in database
 const userSchema = new mongoose.Schema({
-    username: {
-        type: String,
-        unique: true,
-        required: true
-    },
-    passwordHash: {
-        type: String,
-        required: true
-    },
-    role: {
-        type: Number,
-        default: 0  // 0 = regular user, 1 = admin
-    }
+    username: { type: String, unique: true, required: true },
+    passwordHash: { type: String, required: true },
+    role: { type: Number, default: 0  } // 0 = regular user, 1 = admin
 });
 // Auto-increment userId (starts at 1, increments by 1)
 userSchema.plugin(AutoIncrement, {
@@ -37,11 +27,17 @@ const itemSchema = new mongoose.Schema({
     userId: {type: Number, required: true},
     item: {type: String, required: true},
     price: {type: Number, required: true},
+    quantity: {type: Number, required: true, default: 1},
     purchaseDate: { type: Date, required: true, default: Date.now },
     location: String,
     brand: String,
     type: String,
 });
+// Compound unique index (a full combination of these fields must be unique)
+itemSchema.index(
+    { userId: 1, item: 1, price: 1, quantity: 1, purchaseDate: 1 },
+    { unique: true }
+);
 const Item = mongoose.model('Item', itemSchema);
 
 module.exports = {

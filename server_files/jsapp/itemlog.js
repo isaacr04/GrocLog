@@ -4,7 +4,7 @@ console.log('Accessing itemlog.js...');
 
 // Add new item
 async function addItem(req, res) {
-    const { userId, item, price, purchaseDate, location, brand, type } = req.body;
+    const { userId, item, price, quantity, purchaseDate, location, brand, type } = req.body;
     if (!userId || !item || !price || !purchaseDate) {
         return res.status(400).json({ error: 'Required fields missing' });
     }
@@ -12,6 +12,7 @@ async function addItem(req, res) {
     const newItem = new Item({
         userId: userId,
         item,
+        quantity,
         price,
         purchaseDate: purchaseDate,
         location: location || null,
@@ -30,7 +31,7 @@ async function addItem(req, res) {
 
 // Search items
 async function searchItems(req, res) {
-    const { userId, item, price, purchaseDate, start_date, end_date, location, brand, type } = req.body;
+    const { userId, item, price, quantity, purchaseDate, start_date, end_date, location, brand, type } = req.body;
     if (!userId) {
         return res.status(400).json({ error: 'User ID is required' });
     }
@@ -39,6 +40,7 @@ async function searchItems(req, res) {
 
     if (item) filter.item = { $regex: item, $options: 'i' };
     if (price) filter.price = price;
+    if (quantity) filter.quantity = quantity;
     if (purchaseDate) {
         filter.purchaseDate = purchaseDate;
     } else if (start_date && end_date) {
@@ -59,17 +61,18 @@ async function searchItems(req, res) {
 
 // Delete item
 async function deleteItem(req, res) {
-    const { userId, item, price, purchaseDate } = req.body;
-    if (!userId || !item || !price || !purchaseDate) {
+    const { userId, item, price, quantity, purchaseDate } = req.body;
+    if (!userId || !item || !price || !quantity || !purchaseDate) {
         return res.status(400).json({ error: 'All fields are required for deletion' });
     }
 
     try {
         const result = await Item.deleteOne({
-            userId: userId,
+            userId,
             item,
             price,
-            purchaseDate: purchaseDate
+            quantity,
+            purchaseDate,
         });
 
         if (result.deletedCount === 0) {
@@ -88,31 +91,35 @@ async function editItem(req, res) {
         userId,
         item,
         price,
+        quantity,
         purchaseDate,
         newItem,
         newPrice,
+        newQuantity,
         newDate,
         newLocation,
         newBrand,
         newType
     } = req.body;
 
-    if (!userId || !item || !price || !purchaseDate || !newItem || !newPrice || !newDate) {
+    if (!userId || !item || price == null || quantity == null || !purchaseDate || !newItem || newPrice == null || newQuantity == null || !newDate) {
         return res.status(400).json({ error: 'Required fields missing for editing' });
     }
 
     try {
         const result = await Item.updateOne(
             {
-                userId,
-                item,
-                price,
-                purchaseDate,
+                userId: Number(userId),
+                item: item,
+                price: Number(price),
+                quantity: Number(quantity),
+                purchaseDate: purchaseDate,
             },
             {
                 $set: {
                     item: newItem,
-                    price: newPrice,
+                    price: Number(newPrice),
+                    quantity: Number(newQuantity),
                     purchaseDate: newDate,
                     location: newLocation || null,
                     brand: newBrand || null,
@@ -124,12 +131,14 @@ async function editItem(req, res) {
         if (result.modifiedCount === 0) {
             return res.status(404).json({ error: 'No matching item found to update' });
         }
+
         res.json({ message: 'Item updated successfully' });
     } catch (err) {
         console.error('Error updating item:', err);
         res.status(500).json({ error: 'Database error' });
     }
 }
+
 
 module.exports = {
     addItem,

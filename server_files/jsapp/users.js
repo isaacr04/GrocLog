@@ -89,7 +89,7 @@ async function searchUsers(req, res) {
     }
 
     try {
-        const users = await User.find(filter, '-passwordHash');
+        const users = await db.User.find(filter, '-passwordHash');
         res.json(users);
     } catch (err) {
         console.error('Error searching users:', err);
@@ -101,7 +101,7 @@ async function deleteUser(req, res) {
     const { userId } = req.body;
 
     try {
-        const result = await User.deleteOne({ userId: userId });
+        const result = await db.User.deleteOne({ userId: userId });
         if (result.deletedCount === 0) {
             return res.status(404).json({ error: 'User not found' });
         }
@@ -113,21 +113,43 @@ async function deleteUser(req, res) {
 }
 
 async function editUser(req, res) {
-    const { userId, username, password, perm } = req.body;
-    if (!userId || !username || !password || perm === undefined) {
+    const { userId, username, password, role } = req.body;
+    if (!userId || !username || !password || !role) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
 
     try {
-        const result = await User.updateOne(
-            { userId: userId },
-            { $set: { username, passwordHash, role: perm } }
-        );
-        if (result.modifiedCount === 0) {
-            return res.status(404).json({ error: 'No matching user found to update' });
+        const user = await db.User.findOne({ userId });
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
         }
+
+        // Check if the new password matches the current hashed password
+        const isSamePassword = await bcrypt.compare(password, user.passwordHash);
+
+        let updateFields = {
+            username,
+            role
+        };
+
+        if (!isSamePassword) {
+            // Only re-hash and update the password if it's different
+            const passwordHash = await bcrypt.hash(password, 10);
+            updateFields.passwordHash = passwordHash;
+        }
+
+        const result = await db.User.updateOne(
+            { userId },
+            { $set: updateFields }
+        );
+
+        if (result.modifiedCount === 0) {
+            return res.status(200).json({ message: 'No changes were made' });
+        }
+
         res.json({ message: 'User updated successfully' });
     } catch (err) {
         console.error('Error updating user:', err);

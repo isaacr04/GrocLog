@@ -65,8 +65,9 @@ function addListItem(list, entry) {
     itemName.textContent = entry.item;
     itemText.appendChild(itemName);
 
-    // Add price and date (not bold)
-    itemText.append(` - ${USDollar.format(entry.price)} on ${formattedDate} `);
+    // Add quantity, price, and date (not bold)
+    const totalPrice = parseInt(entry.quantity) * parseFloat(entry.price);
+    itemText.append(` (${entry.quantity}) @ (${USDollar.format(entry.price)}) - ${USDollar.format(totalPrice)} on ${formattedDate} `);
 
     // Add Location if available
     if (entry.location) {
@@ -118,6 +119,7 @@ async function addItem(event) {
 
     const item = document.getElementById("nameAdd").value;
     const price = document.getElementById("priceAdd").value;
+    const quantity = document.getElementById("quantityAdd").value;
     const purchaseDate = document.getElementById("dateAdd").value;
     const location = document.getElementById("locationAdd").value.trim();
     const brand = document.getElementById("brandAdd").value.trim();
@@ -127,10 +129,11 @@ async function addItem(event) {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            userId: userId,
+            userId,
             item,
             price,
-            purchaseDate: purchaseDate,
+            quantity,
+            purchaseDate,
             location,
             brand,
             type
@@ -150,6 +153,7 @@ async function deleteItem(entry) {
             userId: userId,
             item: entry.item,
             price: entry.price,
+            quantity: entry.quantity,
             purchaseDate: formatDate(entry.purchaseDate), // Original date format
         })
     });
@@ -158,11 +162,11 @@ async function deleteItem(entry) {
 
 // Function to handle editing an item
 async function editItem(entry) {
-    // Create edit form HTML
     const editForm = `
         <div class="edit-form">
             <label>Item Name: <input type="text" id="editItemName" value="${entry.item}"></label>
             <label>Price: <input type="number" step="0.01" id="editItemPrice" value="${entry.price}"></label>
+            <label>Quantity: <input type="number" step="1" id="editItemQuantity" value="${entry.quantity}"></label>
             <label>Date: <input type="date" id="editItemDate" value="${formatDate(entry.purchaseDate)}"></label>
             <label>Location: <input type="text" id="editItemLocation" list="locationOptions" value="${entry.location || ''}"></label>
             <label>Brand: <input type="text" id="editItemBrand" list="brandOptions" value="${entry.brand || ''}"></label>
@@ -180,31 +184,39 @@ async function editItem(entry) {
         focusConfirm: false,
         preConfirm: () => {
             return {
-                item: document.getElementById('editItemName').value,
-                price: document.getElementById('editItemPrice').value,
+                item: document.getElementById('editItemName').value.trim(),
+                price: parseFloat(document.getElementById('editItemPrice').value),
+                quantity: parseInt(document.getElementById('editItemQuantity').value),
                 date: document.getElementById('editItemDate').value,
-                location: document.getElementById('editItemLocation').value,
-                brand: document.getElementById('editItemBrand').value,
-                type: document.getElementById('editItemType').value
+                location: document.getElementById('editItemLocation').value.trim(),
+                brand: document.getElementById('editItemBrand').value.trim(),
+                type: document.getElementById('editItemType').value.trim()
             };
         }
     });
 
     if (confirmed.isConfirmed) {
-        const { item, price, date, location, brand, type } = confirmed.value;
+        const { item, price, quantity, date, location, brand, type } = confirmed.value;
 
-        if (item && price && date) {
+        // Retrieve userId from sessionStorage
+        const userId = parseInt(sessionStorage.getItem('userId'), 10);
+
+        if (item && !isNaN(price) && !isNaN(quantity) && date && userId) {
             await fetch("/api/edititem", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    userId: userId,
+                    userId,
                     item: entry.item,
-                    price: entry.price,
-                    purchaseDate: formatDate(entry.purchaseDate),
+                    price: Number(entry.price),
+                    quantity: Number(entry.quantity),
+                    purchaseDate: new Date (entry.purchaseDate).toISOString(),
+
                     newItem: item,
                     newPrice: price,
-                    newDate: date,
+                    newQuantity: quantity,
+                    newDate: new Date (date).toISOString(),
+
                     newLocation: location || null,
                     newBrand: brand || null,
                     newType: type || null
@@ -212,9 +224,12 @@ async function editItem(entry) {
             });
 
             loadItems(); // Refresh the list after editing
+        } else {
+            alert("Missing or invalid fields in form.");
         }
     }
 }
+
 
 // Function to handle searching for items
 async function searchItems(event) {
@@ -222,6 +237,7 @@ async function searchItems(event) {
 
     const item = document.getElementById("nameSearch").value;
     const price = document.getElementById("priceSearch").value;
+    const quantity = document.getElementById("quantitySearch").value;
     const dateSearchValue = document.getElementById("dateSearch").value;
     const dateRangeValue = document.getElementById("dateRange").value;
     const location = document.getElementById("locationSearch").value.trim();
@@ -229,9 +245,10 @@ async function searchItems(event) {
     const type = document.getElementById("typeSearch").value.trim();
 
     const searchParams = {
-        userId: userId,
+        userId,
         item,
         price,
+        quantity,
         location,
         brand,
         type
