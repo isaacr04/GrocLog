@@ -106,7 +106,7 @@ async function loadItems() {
     let totalSpendValue = 0;
 
     results.forEach(entry => {
-        totalSpendValue += parseFloat(entry.price);
+        totalSpendValue += (parseFloat(entry.price) * parseFloat(entry.quantity));
         addListItem(itemList, entry);
     });
 
@@ -289,7 +289,7 @@ async function searchItems(event) {
     let filteredSpendValue = 0;
 
     results.forEach(entry => {
-        filteredSpendValue += parseFloat(entry.price);
+        filteredSpendValue += (parseFloat(entry.price) * parseFloat(entry.quantity));
         addListItem(itemList, entry);
     });
 
