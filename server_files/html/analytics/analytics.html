@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrocLog Analytics</title>
+    <link rel="stylesheet" href="../sitestyle.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Flatpickr CSS -->
+    <link rel="stylesheet" href="../flatpickr.css">
+</head>
+<body>
+<section id="menu">
+    <h1>GrocLog Analytics</h1>
+    <button id="goItemlog">Itemlog</button>
+</section>
+
+
+<div class="analytics-container">
+    <!-- Time Period Selector -->
+    <div class="form-piece">
+        <label for="timePeriod">Time Period:</label>
+        <select id="timePeriod">
+            <option value="7">Last 7 Days</option>
+            <option value="30">Last 30 Days</option>
+            <option value="90">Last 3 Months</option>
+            <option value="180">Last 6 Months</option>
+            <option value="365">Last Year</option>
+            <option value="0">Lifetime</option>
+            <option value="custom">Custom Range</option>
+        </select>
+        <div id="customRangeContainer" style="display: none;">
+            <label for="startDate">Start Date:</label>
+            <input type="date" id="startDate">
+            <label for="endDate">End Date:</label>
+            <input type="date" id="endDate">
+            <button id="applyCustomRange">Apply</button>
+        </div>
+    </div>
+
+    <!-- Spending Over Time Chart -->
+    <div class="chart-container">
+        <h2>Spending Over Time</h2>
+        <canvas id="spendingOverTimeChart"></canvas>
+    </div>
+
+    <!-- Breakdown Charts -->
+    <div class="chart-row">
+        <div class="chart-container">
+            <h2>Spending by Location</h2>
+            <canvas id="locationChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <h2>Spending by Brand</h2>
+            <canvas id="brandChart"></canvas>
+        </div>
+    </div>
+
+    <div class="chart-row">
+        <div class="chart-container">
+            <h2>Spending by Type</h2>
+            <canvas id="typeChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <h2>Price Trends</h2>
+            <label for="itemSelect">Select Item:</label>
+            <input type="text" id="itemSelect" list="itemOptions">
+            <datalist id="itemOptions"></datalist>
+            <canvas id="priceTrendChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script src="analyticsscript.js"></script>
+<!-- Flatpickr JS -->
+<script src="../flatpickr.js"></script>
+<script>
+    // Initialize Flatpickr
+    flatpickr("#startDate", {
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+    });
+
+    flatpickr("#endDate", {
+        altInput: true,
+        altFormat: "F j, Y",
+        dateFormat: "Y-m-d",
+    });
+</script>
+</body>
+</html>

@@ -6,10 +6,13 @@
   <title>GrocLog</title>
   <link rel="stylesheet" href="../sitestyle.css">
   <!-- Flatpickr CSS (Calendar) -->
-  <link rel="stylesheet" href="flatpickr.css">
+  <link rel="stylesheet" href="../flatpickr.css">
 </head>
 <body>
-<h1>GrocLog</h1>
+<section id="menu">
+  <h1>GrocLog</h1>
+  <button id="goAnalytics">Analytics</button>
+</section>
 
 <!-- Add Item Form -->
 <form id="Add" class="item-form">
@@ -141,7 +144,7 @@
 <!-- Sweetalert2 JS (Edit Form) -->
 <script src="sweetalert2.js"></script>
 <!-- Flatpickr JS (Calendars)-->
-<script src="flatpickr.js"></script>
+<script src="../flatpickr.js"></script>
 <script>
   // Initialize Flatpickr on date fields
   flatpickr("#dateAdd", {

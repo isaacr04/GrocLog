@@ -42,6 +42,10 @@ app.post('/api/searchitem', authenticateToken, itemlog.searchItems);
 app.delete('/api/deleteitem', authenticateToken, itemlog.deleteItem);
 app.put("/api/edititem", authenticateToken, itemlog.editItem);
 
+// Routes for analytics
+app.post('/api/analytics', itemlog.getAnalytics);
+app.post('/api/pricetrends', itemlog.getPriceTrends);
+
 //Routes for users
 app.post('/api/adduser', authenticateToken, users.addUser);
 app.post('/api/getusers', authenticateToken, users.getUsers);

@@ -139,10 +139,124 @@ async function editItem(req, res) {
     }
 }
 
+// Analytics endpoint
+async function getAnalytics(req, res) {
+    const { userId, days } = req.body;
+
+    try {
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setDate(endDate.getDate() - days);
+
+        // Get spending over time (group by day/week/month depending on time period)
+        const spendingOverTime = await Item.aggregate([
+            { $match: {
+                    userId: userId,
+                    purchaseDate: { $gte: startDate, $lte: endDate }
+                }},
+            { $group: {
+                    _id: { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
+                    total: { $sum: { $multiply: ["$price", "$quantity"] } }
+                }},
+            { $sort: { _id: 1 } }
+        ]);
+
+        // Get spending by location
+        const spendingByLocation = await Item.aggregate([
+            { $match: {
+                    userId: userId,
+                    purchaseDate: { $gte: startDate, $lte: endDate },
+                    location: { $exists: true, $ne: null }
+                }},
+            { $group: {
+                    _id: "$location",
+                    total: { $sum: { $multiply: ["$price", "$quantity"] } }
+                }}
+        ]);
+
+        // Get spending by brand
+        const spendingByBrand = await Item.aggregate([
+            { $match: {
+                    userId: userId,
+                    purchaseDate: { $gte: startDate, $lte: endDate },
+                    brand: { $exists: true, $ne: null }
+                }},
+            { $group: {
+                    _id: "$brand",
+                    total: { $sum: { $multiply: ["$price", "$quantity"] } }
+                }}
+        ]);
+
+        // Get spending by type
+        const spendingByType = await Item.aggregate([
+            { $match: {
+                    userId: userId,
+                    purchaseDate: { $gte: startDate, $lte: endDate },
+                    type: { $exists: true, $ne: null }
+                }},
+            { $group: {
+                    _id: "$type",
+                    total: { $sum: { $multiply: ["$price", "$quantity"] } }
+                }}
+        ]);
+
+        // Get unique items for price trends dropdown
+        const items = await Item.distinct("item", { userId: userId });
+
+        res.json({
+            spendingOverTime: {
+                labels: spendingOverTime.map(item => item._id),
+                values: spendingOverTime.map(item => item.total)
+            },
+            spendingByLocation: {
+                labels: spendingByLocation.map(item => item._id),
+                values: spendingByLocation.map(item => item.total)
+            },
+            spendingByBrand: {
+                labels: spendingByBrand.map(item => item._id),
+                values: spendingByBrand.map(item => item.total)
+            },
+            spendingByType: {
+                labels: spendingByType.map(item => item._id),
+                values: spendingByType.map(item => item.total)
+            },
+            items
+        });
+    } catch (err) {
+        console.error('Error getting analytics:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
+}
+
+// Price trends endpoint
+async function getPriceTrends(req, res) {
+    const { userId, item } = req.body;
+
+    try {
+        const trends = await Item.aggregate([
+            { $match: { userId: userId, item: item } },
+            { $group: {
+                    _id: { $dateToString: { format: "%Y-%m", date: "$purchaseDate" } },
+                    avgPrice: { $avg: "$price" }
+                }},
+            { $sort: { _id: 1 } }
+        ]);
+
+        res.json({
+            labels: trends.map(t => t._id),
+            values: trends.map(t => t.avgPrice)
+        });
+    } catch (err) {
+        console.error('Error getting price trends:', err);
+        res.status(500).json({ error: 'Database error' });
+    }
+}
 
 module.exports = {
     addItem,
     searchItems,
     deleteItem,
-    editItem
+    editItem,
+    getAnalytics,
+    getPriceTrends,
 };

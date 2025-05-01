@@ -327,6 +327,11 @@ document.getElementById("Search").addEventListener("reset", function() {
     filteredSpend.textContent = "$0";
 });
 
+// Connect the Analytics navigation button
+document.getElementById("goAnalytics").addEventListener("click", async function () {
+    window.location.href = '/analytics';
+})
+
 //Formatting for Search Form's Date Button
 // Toggle dropdown on button click
 dateDropdownBtn.addEventListener("click", function(e) {
