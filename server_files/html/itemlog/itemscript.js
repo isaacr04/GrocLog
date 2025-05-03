@@ -306,6 +306,18 @@ function activateRangeDate() {
     atDateCheckbox.checked = false;
 }
 
+function quickSearch(cat,param){
+    console.log("quicksearch");
+    console.log("cat: ",cat);
+    console.log("param: ",param);
+    let field;
+    switch(cat){
+        case 'type':field=document.getElementById("typeSearch");break;
+        case 'location':field=document.getElementById("locationSearch");break;
+    }
+    field.value=param;
+}
+
 document.addEventListener("DOMContentLoaded", async function () {
     userRole = parseInt(sessionStorage.getItem("role"));
     console.log("role returned:", userRole);
