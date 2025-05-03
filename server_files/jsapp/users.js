@@ -118,8 +118,6 @@ async function editUser(req, res) {
         return res.status(400).json({ error: 'All fields are required' });
     }
 
-    const passwordHash = await bcrypt.hash(password, 10);
-
     try {
         const user = await db.User.findOne({ userId });
 
@@ -127,14 +125,13 @@ async function editUser(req, res) {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        // Check if the new password matches the current hashed password
-        const isSamePassword = await bcrypt.compare(password, user.passwordHash);
-
         let updateFields = {
             username,
             role
         };
 
+        // Check if the new password matches the current hashed password
+        const isSamePassword = password === user.passwordHash;
         if (!isSamePassword) {
             // Only re-hash and update the password if it's different
             const passwordHash = await bcrypt.hash(password, 10);

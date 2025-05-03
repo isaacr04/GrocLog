@@ -68,23 +68,21 @@ async function deleteUser(entry) {
 // Function to handle editing a user
 async function editUser(entry) {
     const newUsername = prompt("Edit username:", entry.username);
-    const newPassword = prompt("Edit password:", entry.password);
+    const newPassword = prompt("Edit password:");
     const newRole = prompt("Edit Role:", entry.role);
 
-    if (newUsername && newPassword && newRole) {
-        await fetch("/api/edituser", {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                userId: entry.userId,
-                username: newUsername,
-                password: newPassword,
-                role: newRole,
-            }),
-        });
+    await fetch("/api/edituser", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            userId: entry.userId,
+            username: (newUsername !== null && newUsername !== "") ? newUsername : entry.username,
+            password: (newPassword !== null && newPassword !== "") ? newPassword : entry.passwordHash,
+            role: (newRole !== null && newRole !== "") ? newRole : entry.role,
+        }),
+    });
 
-        loadUsers(); // Refresh the list after editing
-    }
+    loadUsers(); // Refresh the list after editing
 }
 
 // Function to handle searching for users
