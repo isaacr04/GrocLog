@@ -55,11 +55,33 @@ async function login(req, res) {
     }
 }
 
+async function register(req, res) {
+    const {username,password} = req.body;
+
+    //if user already exists
+    const user = await db.User.findOne({ username });
+    if (user) {return res.status(409).json({ message: 'User already exists' });}
+
+    const passwordHash = await bcrypt.hash(password,10);
+    const newUser = new db.User({username, passwordHash, User: 0})
+
+    try{
+        await newUser.save();
+        return res.status(200).json({
+            message: 'Login successful',
+            user: { id: newUser.userId, username: newUser.username, role: newUser.role }
+        });
+    } catch (err) {
+        res.status(500).json({message: 'Error registering user'});
+    }
+
+}
+
 async function addUser(req, res) {
     const { username, password, role } = req.body;
 
     if (await db.User.findOne({ username })) {
-        return res.status(409).json({ message: 'User already exists' });
+        return res.status(409).json({ error: 'User already exists' });
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
@@ -153,7 +175,6 @@ async function editUser(req, res) {
     }
 }
 
-
 async function getID(req, res) {
     const { user, pw } = req.body;
     if (!user || !pw) {
@@ -185,4 +206,5 @@ module.exports = {
     deleteUser,
     editUser,
     getID,
+    register,
 }
