@@ -146,21 +146,32 @@ async function editItem(req, res) {
     }
 }
 
-// Analytics endpoint
 async function getAnalytics(req, res) {
     const { userId, days } = req.body;
 
-    try {
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setDate(endDate.getDate() - days);
+    if (!userId) {
+        return res.status(400).json({ error: 'User ID is required' });
+    }
 
-        // Get spending over time (group by day/week/month depending on time period)
+    try {
+        // Base match conditions (always applied)
+        const baseMatch = { userId: userId };
+
+        // Date filter (only applied if days > 0)
+        let dateFilter = {};
+        if (days && days > 0) {
+            const endDate = new Date();
+            const startDate = new Date();
+            startDate.setDate(endDate.getDate() - days);
+            dateFilter.purchaseDate = { $gte: startDate, $lte: endDate };
+        }
+
+        // Combined match conditions
+        const matchConditions = { ...baseMatch, ...dateFilter };
+
+        // Get spending over time (grouped by day)
         const spendingOverTime = await Item.aggregate([
-            { $match: {
-                    userId: userId,
-                    purchaseDate: { $gte: startDate, $lte: endDate }
-                }},
+            { $match: matchConditions },
             { $group: {
                     _id: { $dateToString: { format: "%Y-%m-%d", date: "$purchaseDate" } },
                     total: { $sum: { $multiply: ["$price", "$quantity"] } }
@@ -168,48 +179,49 @@ async function getAnalytics(req, res) {
             { $sort: { _id: 1 } }
         ]);
 
-        // Get spending by location
+        // Get spending by location (excluding null values)
         const spendingByLocation = await Item.aggregate([
             { $match: {
-                    userId: userId,
-                    purchaseDate: { $gte: startDate, $lte: endDate },
+                    ...matchConditions,
                     location: { $exists: true, $ne: null }
                 }},
             { $group: {
                     _id: "$location",
                     total: { $sum: { $multiply: ["$price", "$quantity"] } }
-                }}
+                }},
+            { $sort: { total: -1 } } // Sort by highest spending first
         ]);
 
-        // Get spending by brand
+        // Get spending by brand (excluding null values)
         const spendingByBrand = await Item.aggregate([
             { $match: {
-                    userId: userId,
-                    purchaseDate: { $gte: startDate, $lte: endDate },
+                    ...matchConditions,
                     brand: { $exists: true, $ne: null }
                 }},
             { $group: {
                     _id: "$brand",
                     total: { $sum: { $multiply: ["$price", "$quantity"] } }
-                }}
+                }},
+            { $sort: { total: -1 } } // Sort by highest spending first
         ]);
 
-        // Get spending by type
+        // Get spending by type (excluding null values)
         const spendingByType = await Item.aggregate([
             { $match: {
-                    userId: userId,
-                    purchaseDate: { $gte: startDate, $lte: endDate },
+                    ...matchConditions,
                     type: { $exists: true, $ne: null }
                 }},
             { $group: {
                     _id: "$type",
                     total: { $sum: { $multiply: ["$price", "$quantity"] } }
-                }}
+                }},
+            { $sort: { total: -1 } } // Sort by highest spending first
         ]);
 
         // Get unique items for price trends dropdown
-        const items = await Item.distinct("item", { userId: userId });
+        const items = await Item.distinct("item", matchConditions);
 
+        // Format response
         res.json({
             spendingOverTime: {
                 labels: spendingOverTime.map(item => item._id),
@@ -229,13 +241,17 @@ async function getAnalytics(req, res) {
             },
             items
         });
+
     } catch (err) {
         console.error('Error getting analytics:', err);
-        res.status(500).json({ error: 'Database error' });
+        res.status(500).json({
+            error: 'Database error',
+            details: err.message
+        });
     }
 }
 
-// Price trends endpoint
+
 async function getPriceTrends(req, res) {
     const { userId, item } = req.body;
 

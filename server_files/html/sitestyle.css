@@ -132,3 +132,50 @@ li .button-container {
     margin: 4px 0 12px 0;
     box-sizing: border-box;
 }
+
+/* Analytics Page Styles */
+.analytics-container {
+    padding: 15px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.chart-row {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.chart-container {
+    background: white;
+    border-radius: 8px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    width: 100%;
+}
+
+.chart-container h2 {
+    margin-top: 0;
+    font-size: 1.2rem;
+}
+
+/* For larger screens */
+@media (min-width: 768px) {
+    .chart-row {
+        flex-direction: row;
+    }
+
+    .chart-container {
+        width: calc(50% - 10px);
+    }
+}
+
+/* Chart canvas sizing */
+canvas {
+    width: 100% !important;
+    height: auto !important;
+    max-height: 300px;
+}
