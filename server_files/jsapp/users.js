@@ -134,8 +134,7 @@ async function editUser(req, res) {
         const isSamePassword = password === user.passwordHash;
         if (!isSamePassword) {
             // Only re-hash and update the password if it's different
-            const passwordHash = await bcrypt.hash(password, 10);
-            updateFields.passwordHash = passwordHash;
+            updateFields.passwordHash = await bcrypt.hash(password, 10);
         }
 
         const result = await db.User.updateOne(
@@ -161,7 +160,7 @@ async function getID(req, res) {
         return res.status(400).json({ code: -1 });
     }
 
-    const foundUser = await User.findOne({ username: user });
+    const foundUser = await db.User.findOne({ username: user });
     if (!foundUser) {
         return res.status(400).json({ id: -1 });
     }

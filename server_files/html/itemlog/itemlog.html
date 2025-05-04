@@ -22,7 +22,7 @@
   </div>
   <div class="form-piece">
     <label for="priceAdd">Price:</label>
-    <input name="price" id="priceAdd" type="number" step="0.01" required>
+    <input name="price" id="priceAdd" type="number" step="0.01" min="0" required>
   </div>
   <div class="form-piece">
     <label for="quantityAdd">Quantity:</label>
@@ -90,8 +90,23 @@
     <input name="name" id="nameSearch">
   </div>
   <div class="form-piece">
-    <label for="priceSearch">Price:</label>
-    <input name="price" id="priceSearch" type="number" step="0.01">
+    <div class="dropdown">
+      <button type="button" class="dropbtn" id="priceDropdownBtn">Price</button>
+      <div class="dropdown-content" id="priceDropdown">
+        <label>
+          <input type="checkbox" id="atPriceCheckbox">
+          <label for="priceSearch">At Price:</label>
+          <input name="price" id="priceSearch" type="number" step="0.01">
+        </label>
+        <label>
+          <input type="checkbox" id="rangePriceCheckbox">
+          <label for="priceRangeStart">Between Prices:</label>
+          <input name="priceRangeStart" id="priceRangeStart" type="number" step="0.01" min="0" placeholder="Min">
+          <span>and</span>
+          <input name="priceRangeEnd" id="priceRangeEnd" type="number" step="0.01" min="0" placeholder="Max">
+        </label>
+      </div>
+    </div>
   </div>
   <div class="form-piece">
     <label for="quantitySearch">Quantity:</label>
@@ -103,12 +118,12 @@
       <div class="dropdown-content" id="dateDropdown">
         <label>
           <input type="checkbox" id="atDateCheckbox">
-          At Date:
+          <label for="dateSearch">At Date:</label>
           <input name="date" id="dateSearch" type="text">
         </label>
         <label>
           <input type="checkbox" id="rangeDateCheckbox">
-          Between Dates:
+          <label for="dateRange">Between Dates:</label>
           <input name="dateRange" id="dateRange" type="text">
         </label>
       </div>

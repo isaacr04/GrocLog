@@ -11,6 +11,13 @@ const atDateCheckbox = document.getElementById("atDateCheckbox");
 const rangeDateCheckbox = document.getElementById("rangeDateCheckbox");
 const dateSearch = document.getElementById("dateSearch");
 const dateRange = document.getElementById("dateRange");
+const priceDropdownBtn = document.getElementById("priceDropdownBtn");
+const priceDropdown = document.getElementById("priceDropdown");
+const atPriceCheckbox = document.getElementById("atPriceCheckbox");
+const rangePriceCheckbox = document.getElementById("rangePriceCheckbox");
+const priceSearch = document.getElementById("priceSearch");
+const priceRangeStart = document.getElementById("priceRangeStart");
+const priceRangeEnd = document.getElementById("priceRangeEnd");
 const userId = parseInt(sessionStorage.getItem('userId'));
 
 
@@ -231,13 +238,14 @@ async function editItem(entry) {
 }
 
 
-// Function to handle searching for items
 async function searchItems(event) {
     event.preventDefault();
 
     const item = document.getElementById("nameSearch").value;
-    const price = document.getElementById("priceSearch").value;
     const quantity = document.getElementById("quantitySearch").value;
+    const priceSearchValue = document.getElementById("priceSearch").value;
+    const priceRangeStartValue = document.getElementById("priceRangeStart").value;
+    const priceRangeEndValue = document.getElementById("priceRangeEnd").value;
     const dateSearchValue = document.getElementById("dateSearch").value;
     const dateRangeValue = document.getElementById("dateRange").value;
     const location = document.getElementById("locationSearch").value.trim();
@@ -247,34 +255,36 @@ async function searchItems(event) {
     const searchParams = {
         userId,
         item,
-        price,
         quantity,
         location,
         brand,
         type
     };
 
-    // Add date filter based on which checkbox is checked
-    if (atDateCheckbox.checked) {
-        if(!dateSearchValue) {
-            alert("Please select a date for 'At Date' filter");
+    // Add Price filter based on which checkbox is checked
+    if (atPriceCheckbox.checked && priceSearchValue) {
+        searchParams.price = priceSearchValue;
+    }
+    else if (rangePriceCheckbox.checked && priceRangeStartValue && priceRangeEndValue) {
+        searchParams.start_price = parseFloat(priceRangeStartValue);
+        searchParams.end_price = parseFloat(priceRangeEndValue);
+
+        // Validate price range
+        if (searchParams.start_price > searchParams.end_price) {
+            alert("Minimum price must be less than maximum price");
             return;
-        }
-        else {
-            searchParams.purchaseDate = dateSearchValue;
         }
     }
-    else if (rangeDateCheckbox.checked) {
-        if (!dateRangeValue) {
-            alert("Please select a date range for 'Between Dates' filter");
-            return;
-        }
-        else {
-            const dates = dateRangeValue.split(" to ");
-            if (dates.length === 2) {
-                searchParams.start_date = dates[0];
-                searchParams.end_date = dates[1];
-            }
+
+    // Add date filter based on which checkbox is checked
+    if (atDateCheckbox.checked && dateSearchValue) {
+        searchParams.purchaseDate = dateSearchValue;
+    }
+    else if (rangeDateCheckbox.checked && dateRangeValue) {
+        const dates = dateRangeValue.split(" to ");
+        if (dates.length === 2) {
+            searchParams.start_date = dates[0];
+            searchParams.end_date = dates[1];
         }
     }
 
@@ -304,6 +314,16 @@ function activateAtDate() {
 function activateRangeDate() {
     rangeDateCheckbox.checked = true;
     atDateCheckbox.checked = false;
+}
+
+function activateAtPrice() {
+    atPriceCheckbox.checked = true;
+    rangePriceCheckbox.checked = false;
+}
+
+function activateRangePrice() {
+    rangePriceCheckbox.checked = true;
+    atPriceCheckbox.checked = false;
 }
 
 function quickSearch(cat,param){
@@ -343,6 +363,43 @@ document.getElementById("Search").addEventListener("reset", function() {
 document.getElementById("goAnalytics").addEventListener("click", async function () {
     window.location.href = '/analytics';
 })
+
+//Formatting for Search Form's Price Button
+// Toggle dropdown on button click
+priceDropdownBtn.addEventListener("click", function(e) {
+    e.stopPropagation(); // Prevent event from bubbling up
+    priceDropdown.classList.toggle("show");
+});
+// Close dropdown when clicking outside
+document.addEventListener("click", function(e) {
+    if (!e.target.closest('.dropdown')) {
+        priceDropdown.classList.remove("show");
+    }
+});
+// Prevent dropdown from closing when interacting with its contents
+priceDropdown.addEventListener("click", function(e) {
+    e.stopPropagation();
+});
+// Checkbox click behavior
+atPriceCheckbox.addEventListener("change", () => {
+    if (atPriceCheckbox.checked) {
+        rangePriceCheckbox.checked = false;
+    }
+});
+rangePriceCheckbox.addEventListener("change", () => {
+    if (rangePriceCheckbox.checked) {
+        atPriceCheckbox.checked = false;
+    }
+});
+// Input focus triggers checkbox
+priceSearch.addEventListener("focus", activateAtPrice);
+priceRangeStart.addEventListener("focus", activateRangePrice);
+priceRangeEnd.addEventListener("focus", activateRangePrice);
+// Value change also toggles checkbox
+priceSearch.addEventListener("input", activateAtPrice);
+priceRangeStart.addEventListener("input", activateRangePrice);
+priceRangeEnd.addEventListener("input", activateRangePrice);
+
 
 //Formatting for Search Form's Date Button
 // Toggle dropdown on button click

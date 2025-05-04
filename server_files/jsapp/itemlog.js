@@ -31,7 +31,7 @@ async function addItem(req, res) {
 
 // Search items
 async function searchItems(req, res) {
-    const { userId, item, price, quantity, purchaseDate, start_date, end_date, location, brand, type } = req.body;
+    const { userId, item, price, start_price, end_price, quantity, purchaseDate, start_date, end_date, location, brand, type } = req.body;
     if (!userId) {
         return res.status(400).json({ error: 'User ID is required' });
     }
@@ -39,7 +39,14 @@ async function searchItems(req, res) {
     let filter = { userId: userId };
 
     if (item) filter.item = { $regex: item, $options: 'i' };
-    if (price) filter.price = price;
+    if (price !== undefined && price !== null) {
+        filter.price = price;
+    } else if (
+        start_price !== undefined && start_price !== null &&
+        end_price !== undefined && end_price !== null
+    ) {
+        filter.price = { $gte: start_price, $lte: end_price };
+    }
     if (quantity) filter.quantity = quantity;
     if (purchaseDate) {
         filter.purchaseDate = purchaseDate;
