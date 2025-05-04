@@ -35,6 +35,7 @@ function authenticateToken(req, res, next) {
   });
 }
 app.post('/api/login', users.login);
+app.post('/api/register', users.register);
 
 // Routes for itemlog
 app.post('/api/additem', authenticateToken, itemlog.addItem);
