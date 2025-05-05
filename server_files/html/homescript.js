@@ -18,10 +18,10 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
-const login = (username, password) => {
+async function login(username, password) {
     let data = JSON.stringify({ username: username, password: password });
 
-    fetch("/api/login", {
+    await fetch("/api/login", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -59,10 +59,10 @@ const login = (username, password) => {
 };
 
 //Registering from the home-page, std users only
-const register = (username, password) => {
-    let data = JSON.stringify({ username: username, password: password });
+async function register(username, password) {
+    let data = JSON.stringify({ username: username, password: password, role: 0});
 
-    fetch("/api/register", {
+    await fetch("/api/adduser", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
@@ -71,32 +71,18 @@ const register = (username, password) => {
     })
         .then(response => response.json())
         .then(data => {
-            if (data.error) {
+            if (data.message === "Error registering user") {
                 console.error("Registration failed:", data.error);
                 alert("Registration failed: " + data.error);
                 return;
             }
 
-            if(data.message = "User already exists"){
+            if(data.message === "User already exists"){
                 alert("Error: User already exists");
                 return;
             }
 
-            const { id, username, role } = data.user;
-
-            // Store credentials and info in sessionStorage
-            sessionStorage.setItem('userId', id);
-            sessionStorage.setItem('username', username);
-            sessionStorage.setItem('role', role);
-
-            // Redirect based on role
-            if (role === 0) {
-                window.location.href = '/itemlog';
-            } else if (role === 1) {
-                window.location.href = '/admin';
-            } else {
-                console.warn("Unknown role:", role);
-            }
+            login(username, password);
         })
         .catch(error => {
             console.error("Error during login:", error);

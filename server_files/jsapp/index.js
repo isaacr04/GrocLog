@@ -35,7 +35,6 @@ function authenticateToken(req, res, next) {
   });
 }
 app.post('/api/login', users.login);
-app.post('/api/register', users.register);
 
 // Routes for itemlog
 app.post('/api/additem', authenticateToken, itemlog.addItem);
@@ -48,7 +47,7 @@ app.post('/api/analytics', itemlog.getAnalytics);
 app.post('/api/pricetrends', itemlog.getPriceTrends);
 
 //Routes for users
-app.post('/api/adduser', authenticateToken, users.addUser);
+app.post('/api/adduser', users.addUser);
 app.post('/api/getusers', authenticateToken, users.getUsers);
 app.post('/api/searchusers', authenticateToken, users.searchUsers);
 app.delete('/api/deleteuser', authenticateToken, users.deleteUser);
