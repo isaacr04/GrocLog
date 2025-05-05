@@ -56,14 +56,14 @@ async function login(req, res) {
 }
 
 async function register(req, res) {
-    const {username,password} = req.body;
+    const { username, password } = req.body;
 
     //if user already exists
     const user = await db.User.findOne({ username });
     if (user) {return res.status(409).json({ message: 'User already exists' });}
 
-    const passwordHash = await bcrypt.hash(password,10);
-    const newUser = new db.User({username, passwordHash, User: 0})
+    const passwordHash = await bcrypt.hash(password, 10);
+    const newUser = new db.User({ username, passwordHash, User: 0 })
 
     try{
         await newUser.save();

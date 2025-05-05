@@ -61,12 +61,12 @@ async function login(username, password) {
 //Registering from the home-page, std users only
 async function register(username, password) {
     try {
-        const response = await fetch("/api/adduser", {
+        const response = await fetch("/api/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ username, password, role: 0 })
+            body: JSON.stringify({ username, password})
         });
 
         const data = await response.json();
