@@ -56,36 +56,39 @@ async function login(username, password) {
             console.error("Error during login:", error);
             alert("Something went wrong. Try again.");
         });
-};
+}
 
 //Registering from the home-page, std users only
 async function register(username, password) {
-    let data = JSON.stringify({ username: username, password: password, role: 0});
-
-    await fetch("/api/adduser", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: data
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message === "Error registering user") {
-                console.error("Registration failed:", data.error);
-                alert("Registration failed: " + data.error);
-                return;
-            }
-
-            if(data.message === "User already exists"){
-                alert("Error: User already exists");
-                return;
-            }
-
-            login(username, password);
-        })
-        .catch(error => {
-            console.error("Error during login:", error);
-            alert("Registration failed.");
+    try {
+        const response = await fetch("/api/adduser", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ username, password, role: 0 })
         });
-};
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            // Handle specific error cases
+            if (data.message === "User already exists") {
+                alert("Error: Username already exists");
+                return;
+            } else {
+                console.error("Registration failed:", data.error || "Unknown error");
+                alert("Registration failed: " + (data.error || "Please try again"));
+                return;
+            }
+        }
+
+        // Only attempt login if registration was successful
+        if (data.message === "User registered successfully") {
+            await login(username, password);
+        }
+    } catch (error) {
+        console.error("Error during registration:", error);
+        alert("Registration failed. Please try again.");
+    }
+}
