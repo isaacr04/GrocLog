@@ -97,21 +97,18 @@ async function addUser(req, res) {
 
 
 async function searchUsers(req, res) {
-    const { username, password, perm } = req.body;
+    const { username, role } = req.body;
     let filter = {};
 
     if (username) {
         filter.username = { $regex: username, $options: 'i' };
     }
-    if (password) {
-        filter.passwordHash = await bcrypt.hash(password, 10);
-    }
-    if (perm !== undefined) {
-        filter.role = perm;
+    if (role !== undefined) {
+        filter.role = role;
     }
 
     try {
-        const users = await db.User.find(filter, '-passwordHash');
+        const users = await db.User.find(filter);
         res.json(users);
     } catch (err) {
         console.error('Error searching users:', err);

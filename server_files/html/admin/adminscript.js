@@ -30,7 +30,7 @@ async function loadUsers() {
     itemList.innerHTML = "";
     results.forEach(entry => {
         const li = document.createElement("li");
-        li.textContent = `${entry.userId}: Username: ${entry.username} Password: ${entry.passwordHash} Role: ${entry.role}`;
+        li.textContent = `${entry.userId}: Username: ${entry.username} Role: ${entry.role}`;
 
         addButtons(li, entry);
         itemList.appendChild(li);
@@ -90,13 +90,12 @@ async function searchUsers(event) {
     event.preventDefault();
 
     const username = document.getElementById("usernameSearch").value;
-    const password = document.getElementById("passwordSearch").value;
     const role = document.getElementById("roleSearch").value;
 
     const response = await fetch("/api/searchusers", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username: username, password: password, role: role })
+        body: JSON.stringify({ username: username, role: role })
     });
 
     const results = await response.json();
@@ -104,7 +103,7 @@ async function searchUsers(event) {
 
     results.forEach(entry => {
         const li = document.createElement("li");
-        li.textContent = `${entry.userId}: Username: ${entry.username} Password: ${entry.password} Perm: ${entry.role}`;
+        li.textContent = `${entry.userId}: Username: ${entry.username} Role: ${entry.role}`;
 
         addButtons(li, entry);
         itemList.appendChild(li);
