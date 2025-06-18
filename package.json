@@ -8,14 +8,19 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/LucasJEstevez/CS3110-GrocLog.git"
+    "url": "https://github.com/MrMiffs/GrocLog"
   },
-  "private": true,
+  "private": false,
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "body-parser": "^1.20.3",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "flatpickr": "^4.6.13",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.16.0",
+    "mongoose-sequence": "^6.0.1",
     "mysql2": "^3.13.0"
   }
 }
