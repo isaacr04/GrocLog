@@ -17,4 +17,4 @@ Package Dependencies:
         "mongoose-sequence": "^6.0.1",
 ```
 
-To host the web app, `nginx` must be configured to allow the routes `/api`, `/itemlog`. `/admin`, and `analytics`.
+To host the web app, `nginx` must be configured to allow the routes `/api`, `/itemlog`. `/admin`, and `/analytics`.
